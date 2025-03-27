@@ -1,0 +1,25 @@
+{
+  "name": "hexlet/code",
+  "description": "php page analyzer project",
+  "type": "project",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Ольга Курбатова",
+      "email": "kon@2i.tusur.ru"
+    }
+  ],
+  "require": {
+    "slim/slim": "^4.14",
+    "slim/psr7": "^1.7",
+    "slim/http": "^1.4",
+    "slim/php-view": "^3.4",
+    "php-di/php-di": "^7.0"
+  },
+  "require-dev": {
+    "squizlabs/php_codesniffer": "^3.12"
+  },
+  "scripts": {
+    "phpcs": "phpcs"
+  }
+}
