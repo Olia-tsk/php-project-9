@@ -4,12 +4,16 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use DI\Container;
 use Slim\Factory\AppFactory;
+use Slim\Flash\Messages;
 use Slim\Views\PhpRenderer;
 
 $container = new Container();
 
 $container->set('renderer', function () {
     return new PhpRenderer(__DIR__ . '/../templates');
+});
+$container->set('flash', function () {
+    return new Messages();
 });
 
 $app = AppFactory::createFromContainer($container);
