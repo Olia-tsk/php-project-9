@@ -19,7 +19,20 @@ $container->set('flash', function () {
 $app = AppFactory::createFromContainer($container);
 $app->addErrorMiddleware(true, true, true);
 
-$app->get('/', function ($request, $response) {
+$app->get('/urls', function ($request, $response) {
+    return $this->get('renderer')->render($response, 'urls.phtml');
+})->setName('urls');
+
+$app->get('/urls/1', function ($request, $response) {
+    return $this->get('renderer')->render($response, 'url.phtml');
+})->setName('url');
+
+$router = $app->getRouteCollector()->getRouteParser();
+
+$app->get('/', function ($request, $response) use ($router) {
+    $router->urlFor('urls');
+    $router->urlFor('url');
+
     return $this->get('renderer')->render($response, 'index.phtml');
 });
 
