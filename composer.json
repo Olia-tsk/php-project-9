@@ -15,12 +15,18 @@
     "slim/http": "^1.4",
     "slim/php-view": "^3.4",
     "php-di/php-di": "^7.0",
-    "slim/flash": "^0.4.0"
+    "slim/flash": "^0.4.0",
+    "illuminate/support": "^12.3"
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "^3.12"
   },
   "scripts": {
     "phpcs": "phpcs"
+  },
+  "autoload": {
+    "psr-4": {
+      "Analyzer\\": "src/"
+    }
   }
 }
