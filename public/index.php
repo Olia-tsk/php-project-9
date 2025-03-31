@@ -12,9 +12,21 @@ $container = new Container();
 $container->set('renderer', function () {
     return new PhpRenderer(__DIR__ . '/../templates');
 });
+
+$container->set(PDO::class, function () {
+    $databaseUrl = parse_url($_ENV['DATABASE_URL']);
+    $connection = new PDO("pgsql:host=" . $databaseUrl['host'] . ";dbname=" . ltrim($databaseUrl['path'], '/'), $databaseUrl['user'], $databaseUrl['pass']);
+    $connection->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+    return $connection;
+});
+
 $container->set('flash', function () {
     return new Messages();
 });
+
+$initFilePath = implode('/', [dirname(__DIR__), 'database.sql']);
+$initSql = file_get_contents($initFilePath);
+$container->get(PDO::class)->exec($initSql);
 
 $app = AppFactory::createFromContainer($container);
 $app->addErrorMiddleware(true, true, true);
