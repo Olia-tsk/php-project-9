@@ -31,8 +31,7 @@ $container->get(PDO::class)->exec($initSql);
 $app = AppFactory::createFromContainer($container);
 $app->addErrorMiddleware(true, true, true);
 
-$app->get('/urls', function ($request, $response) {
-    return $this->get('renderer')->render($response, 'urls.phtml');
+$repo = $container->get(UrlRepository::class);
 })->setName('urls');
 
 $app->get('/urls/1', function ($request, $response) {
