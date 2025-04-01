@@ -14,16 +14,18 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>
-                            <a href="/urls/1">
-                                https://php-page-analyzer-ru.hexlet.app
-                            </a>
-                        </td>
-                        <td></td>
-                        <td></td>
-                    </tr>
+                    <?php foreach ($urls as $url): ?>
+                        <tr>
+                            <td>
+                                <?= $url->getId() ?>
+                            </td>
+                            <td>
+                                <a href="/urls/<?= $url->getId() ?>"><?= $url->getName() ?></a>
+                            </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
