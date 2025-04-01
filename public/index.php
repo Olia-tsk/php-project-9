@@ -32,6 +32,13 @@ $app = AppFactory::createFromContainer($container);
 $app->addErrorMiddleware(true, true, true);
 
 $repo = $container->get(UrlRepository::class);
+
+$app->get('/urls', function ($request, $response) use ($repo) {
+    $urls = $repo->getEntities();
+    $params = [
+        'urls' => $urls
+    ];
+    return $this->get('renderer')->render($response, 'urls.phtml', $params);
 })->setName('urls');
 
 $app->get('/urls/1', function ($request, $response) {
