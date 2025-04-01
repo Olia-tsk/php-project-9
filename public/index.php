@@ -53,10 +53,7 @@ $app->get('/urls/{id}', function ($request, $response, $args) use ($repo) {
 
 $router = $app->getRouteCollector()->getRouteParser();
 
-$app->get('/', function ($request, $response) use ($router) {
-    $router->urlFor('urls');
-    $router->urlFor('url');
-
+$app->get('/', function ($request, $response) {
     return $this->get('renderer')->render($response, 'index.phtml');
 });
 
