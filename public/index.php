@@ -2,10 +2,15 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
+use Analyzer\Url as AnalyzerUrl;
+use Analyzer\Validator;
+use Analyzer\UrlRepository;
 use DI\Container;
 use Slim\Factory\AppFactory;
 use Slim\Flash\Messages;
 use Slim\Views\PhpRenderer;
+
+session_start();
 
 $container = new Container();
 
@@ -55,6 +60,25 @@ $router = $app->getRouteCollector()->getRouteParser();
 
 $app->get('/', function ($request, $response) {
     return $this->get('renderer')->render($response, 'index.phtml');
+});
+
+$app->post('/urls', function ($request, $response) use ($router, $repo) {
+    $urlData = $request->getParsedBodyParam('url');
+    $validator = new Validator();
+    $errors = $validator->validate($urlData);
+    if (count($errors) === 0) {
+        $url = AnalyzerUrl::fromArray($urlData);
+        $result = $repo->save($url);
+        $id = $url->getId();
+        $this->get('flash')->addMessage('success', $result);
+        return $response->withRedirect($router->urlFor('url', ['id' => $id]), 302);
+    }
+
+    $params = [
+        'url' => new AnalyzerUrl(),
+        'errors' => $errors
+    ];
+    return $this->get('renderer')->render($response->withStatus(422), 'index.phtml', $params);
 });
 
 $app->run();
