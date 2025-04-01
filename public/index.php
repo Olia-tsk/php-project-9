@@ -41,8 +41,14 @@ $app->get('/urls', function ($request, $response) use ($repo) {
     return $this->get('renderer')->render($response, 'urls.phtml', $params);
 })->setName('urls');
 
-$app->get('/urls/1', function ($request, $response) {
-    return $this->get('renderer')->render($response, 'url.phtml');
+$app->get('/urls/{id}', function ($request, $response, $args) use ($repo) {
+    $messages = $this->get('flash')->getMessages();
+    $url = $repo->find($args['id']);
+    $params = [
+        'flash' => $messages,
+        'url' => $url
+    ];
+    return $this->get('renderer')->render($response, 'url.phtml', $params);
 })->setName('url');
 
 $router = $app->getRouteCollector()->getRouteParser();
