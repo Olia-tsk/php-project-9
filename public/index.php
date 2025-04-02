@@ -37,6 +37,7 @@ $app = AppFactory::createFromContainer($container);
 $app->addErrorMiddleware(true, true, true);
 
 $repo = $container->get(UrlRepository::class);
+$checkRepo = $container->get(CheckRepository::class);
 
 $app->get('/urls', function ($request, $response) use ($repo) {
     $urls = $repo->getEntities();
