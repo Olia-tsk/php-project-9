@@ -82,4 +82,15 @@ $app->post('/urls', function ($request, $response) use ($router, $repo) {
     return $this->get('renderer')->render($response->withStatus(422), 'index.phtml', $params);
 });
 
+$app->post('/urls/{url_id}/checks', function ($request, $response, $args) use ($router, $checkRepo) {
+    $url_id = $args['url_id'];
+    $checkRepo->addCheck($url_id);
+
+    $params = [
+        'id' => $url_id,
+    ];
+
+    return $response->withRedirect($router->urlFor('url', $params));
+})->setName('url_check');
+
 $app->run();
