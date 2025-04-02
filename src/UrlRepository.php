@@ -16,7 +16,7 @@ class UrlRepository
     public function getEntities(): array
     {
         $urls = [];
-        $sql = "SELECT * FROM urls";
+        $sql = "SELECT * FROM urls ORDER BY created_at DESC";
         $stmt = $this->connection->query($sql);
 
         while ($row = $stmt->fetch()) {
@@ -46,7 +46,7 @@ class UrlRepository
 
     public function find(int $id)
     {
-        $sql = "SELECT * FROM urls WHERE id = ? ORDER BY created_at DESC";
+        $sql = "SELECT * FROM urls WHERE id = ?";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute([$id]);
         if ($row = $stmt->fetch()) {
