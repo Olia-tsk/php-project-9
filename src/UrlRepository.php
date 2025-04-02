@@ -52,6 +52,7 @@ class UrlRepository
         if ($row = $stmt->fetch()) {
             $url = Url::fromArray($row);
             $url->setId($row['id']);
+            $url->setDate($row['created_at']);
             return $url;
         }
     }
