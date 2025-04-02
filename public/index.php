@@ -3,6 +3,7 @@
 require __DIR__ . '/../vendor/autoload.php';
 
 use Analyzer\Url as AnalyzerUrl;
+use Analyzer\CheckRepository;
 use Analyzer\Validator;
 use Analyzer\UrlRepository;
 use DI\Container;
@@ -39,10 +40,19 @@ $app->addErrorMiddleware(true, true, true);
 $repo = $container->get(UrlRepository::class);
 $checkRepo = $container->get(CheckRepository::class);
 
-$app->get('/urls', function ($request, $response) use ($repo) {
+$app->get('/urls', function ($request, $response) use ($repo, $checkRepo) {
     $urls = $repo->getEntities();
+    $urlsCheckData = array_map(function ($url) use ($checkRepo) {
+        $lastCheck = $checkRepo->getLastCheck($url->getId());
+        if ($lastCheck) {
+            $url->setLastCheck($lastCheck['created_at']);
+        }
+        return $url;
+    }, $urls);
+
     $params = [
-        'urls' => $urls
+        'urlsCheckData' => $urlsCheckData
+
     ];
     return $this->get('renderer')->render($response, 'urls.phtml', $params);
 })->setName('urls');
