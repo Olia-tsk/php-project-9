@@ -9,6 +9,7 @@ class Url
     private ?int $id = null;
     private ?string $name = null;
     private ?string $created_at = null;
+    private ?string $last_check = null;
 
     public static function fromArray(array $urlData): Url
     {
@@ -33,6 +34,11 @@ class Url
         return $this->created_at;
     }
 
+    public function getLastCheck()
+    {
+        return $this->last_check;
+    }
+
     public function setId(int $id): void
     {
         $this->id = $id;
@@ -46,5 +52,10 @@ class Url
     public function setDate(string $created_at): void
     {
         $this->created_at = $created_at;
+    }
+
+    public function setLastCheck($last_check): void
+    {
+        $this->last_check = $last_check;
     }
 }
