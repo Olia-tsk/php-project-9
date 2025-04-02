@@ -55,17 +55,17 @@ class UrlRepository
         }
     }
 
-    private function update(Url $url): void
+    private function findByName(string $name)
     {
-        $sql = "UPDATE urls SET name = :name, created_at = :created_at WHERE id = :id";
+        $sql = "SELECT * FROM urls WHERE name = ?";
         $stmt = $this->connection->prepare($sql);
-        $id = $url->getId();
-        $name = $url->getName();
-        $created_at = $url->getDate();
-        $stmt->bindParam(':name', $name);
-        $stmt->bindParam(':created_at', $created_at);
-        $stmt->bindParam(':id', $id);
-        $stmt->execute();
+        $stmt->execute([$name]);
+        if ($row = $stmt->fetch()) {
+            $id = $row['id'];
+            return $id;
+        }
+
+        return false;
     }
 
     private function create(Url $url): void
