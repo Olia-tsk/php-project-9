@@ -47,12 +47,13 @@ $app->get('/urls', function ($request, $response) use ($repo) {
     return $this->get('renderer')->render($response, 'urls.phtml', $params);
 })->setName('urls');
 
-$app->get('/urls/{id}', function ($request, $response, $args) use ($repo) {
+$app->get('/urls/{id}', function ($request, $response, $args) use ($repo, $checkRepo) {
     $messages = $this->get('flash')->getMessages();
     $url = $repo->find($args['id']);
     $params = [
         'flash' => $messages,
-        'url' => $url
+        'url' => $url,
+        'checkData' => $checkRepo->getCheck($args['id'])
     ];
     return $this->get('renderer')->render($response, 'url.phtml', $params);
 })->setName('url');
