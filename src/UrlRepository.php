@@ -31,9 +31,10 @@ class UrlRepository
     public function save(Url $url)
     {
         $message = '';
+        $urlId = $this->findByName($url->getName());
 
-        if ($url->exists()) {
-            $this->update($url);
+        if ($urlId) {
+            $url->setId($urlId);
             $message = 'Страница уже существует';
         } else {
             $this->create($url);
