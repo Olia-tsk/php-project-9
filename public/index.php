@@ -93,9 +93,20 @@ $app->post('/urls', function ($request, $response) use ($router, $repo) {
     return $this->get('renderer')->render($response->withStatus(422), 'index.phtml', $params);
 });
 
-$app->post('/urls/{url_id}/checks', function ($request, $response, $args) use ($router, $checkRepo) {
+$app->post('/urls/{url_id}/checks', function ($request, $response, $args) use ($router, $repo, $checkRepo) {
     $url_id = $args['url_id'];
-    $checkRepo->addCheck($url_id);
+    $url = $repo->find($url_id);
+    $client = new Client();
+
+    try {
+        $requestResult = $client->get($url->getName());
+        $status_code = $requestResult->getStatusCode();
+        $checkRepo->addCheck($url_id, $status_code);
+        $this->get('flash')->addMessage('success', 'Страница успешно проверена');
+    } catch (Exception $e) {
+        $this->get('flash')->addMessage('error', 'Произошла ошибка при проверке, не удалось подключиться');
+    }
+
 
     $params = [
         'id' => $url_id,
