@@ -47,6 +47,7 @@ $app->get('/urls', function ($request, $response) use ($repo, $checkRepo) {
         $lastCheck = $checkRepo->getLastCheck($url->getId());
         if ($lastCheck) {
             $url->setLastCheck($lastCheck['created_at']);
+            $url->setStatusCode($lastCheck['status_code']);
         }
         return $url;
     }, $urls);
