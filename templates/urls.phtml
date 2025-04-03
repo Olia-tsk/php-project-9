@@ -27,7 +27,9 @@
                             <td>
                                 <?= $url->getLastCheck() ?>
                             </td>
-                            <td></td>
+                            <td>
+                                <?= $url->getStatusCode() ?>
+                            </td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
