@@ -7,6 +7,7 @@ use Analyzer\CheckRepository;
 use Analyzer\Validator;
 use Analyzer\UrlRepository;
 use DI\Container;
+use GuzzleHttp\Client;
 use Slim\Factory\AppFactory;
 use Slim\Flash\Messages;
 use Slim\Views\PhpRenderer;
