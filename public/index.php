@@ -7,6 +7,7 @@ use Analyzer\CheckRepository;
 use Analyzer\Validator;
 use Analyzer\UrlRepository;
 use DI\Container;
+use DiDom\Document;
 use GuzzleHttp\Client;
 use Slim\Factory\AppFactory;
 use Slim\Flash\Messages;
@@ -103,7 +104,14 @@ $app->post('/urls/{url_id}/checks', function ($request, $response, $args) use ($
     try {
         $requestResult = $client->get($url->getName());
         $status_code = $requestResult->getStatusCode();
-        $checkRepo->addCheck($url_id, $status_code);
+        $body = $requestResult->getBody()->getContents();
+        $document = new Document($body);
+        $h1 = optional($document->first('h1'))->text() ?? null;
+        $title = optional($document->first('title'))->text() ?? null;
+        $descTag = $document->first('meta[name=description]') ?? null;
+        $description = $descTag ? $descTag->getAttribute('content') : null;
+
+        $checkRepo->addCheck($url_id, $status_code, $h1, $title, $description);
         $this->get('flash')->addMessage('success', 'Страница успешно проверена');
     } catch (Exception $e) {
         $this->get('flash')->addMessage('error', 'Произошла ошибка при проверке, не удалось подключиться');
