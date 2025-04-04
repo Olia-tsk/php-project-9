@@ -13,13 +13,16 @@ class CheckRepository
         $this->connection = $connection;
     }
 
-    public function addCheck($url_id, $status_code): void
+    public function addCheck($url_id, $status_code, $h1, $title, $description): void
     {
-        $sql = "INSERT INTO url_checks (url_id, status_code, created_at) VALUES (:url_id, :status_code, :created_at)";
+        $sql = "INSERT INTO url_checks (url_id, status_code, h1, title, description, created_at) VALUES (:url_id, :status_code, :h1, :title, :description, :created_at)";
         $stmt = $this->connection->prepare($sql);
         $created_at = Carbon::now();
         $stmt->bindParam(':url_id', $url_id);
         $stmt->bindParam(':status_code', $status_code);
+        $stmt->bindParam(':h1', $h1);
+        $stmt->bindParam(':title', $title);
+        $stmt->bindParam(':description', $description);
         $stmt->bindParam(':created_at', $created_at);
         $stmt->execute();
     }
