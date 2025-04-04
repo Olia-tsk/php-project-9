@@ -38,6 +38,9 @@ class CheckRepository
             $check['id'] = $row['id'];
             $check['url_id'] = $row['url_id'];
             $check['status_code'] = $row['status_code'];
+            $check['h1'] = $row['h1'];
+            $check['title'] = $row['title'];
+            $check['description'] = $row['description'];
             $check['created_at'] = $row['created_at'];
             $checkData[] = $check;
         }
