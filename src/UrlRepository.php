@@ -19,10 +19,12 @@ class UrlRepository
         $sql = "SELECT * FROM urls ORDER BY created_at DESC";
         $stmt = $this->connection->query($sql);
 
-        while ($row = $stmt->fetch()) {
-            $url = Url::fromArray($row);
-            $url->setId($row['id']);
-            $urls[] = $url;
+        if ($stmt) {
+            while ($row = $stmt->fetch()) {
+                $url = Url::fromArray($row);
+                $url->setId($row['id']);
+                $urls[] = $url;
+            }
         }
 
         return $urls;

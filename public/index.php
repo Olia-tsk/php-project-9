@@ -86,7 +86,10 @@ $app->post('/urls', function ($request, $response) use ($router, $repo) {
         $result = $repo->save($url);
         $id = $url->getId();
         $this->get('flash')->addMessage('success', $result);
-        return $response->withRedirect($router->urlFor('url', ['id' => $id]), 302);
+        $params = [
+            'id' => (string) $id
+        ];
+        return $response->withRedirect($router->urlFor('url', $params));
     }
 
     $params = [
