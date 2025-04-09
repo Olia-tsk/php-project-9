@@ -25,7 +25,7 @@ class Url
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -60,12 +60,12 @@ class Url
         $this->created_at = $created_at;
     }
 
-    public function setLastCheck($last_check): void
+    public function setLastCheck(string $last_check): void
     {
         $this->last_check = $last_check;
     }
 
-    public function setStatusCode(int $status_code): void
+    public function setStatusCode(?int $status_code): void
     {
         $this->status_code = $status_code;
     }
