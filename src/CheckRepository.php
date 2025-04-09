@@ -13,7 +13,7 @@ class CheckRepository
         $this->connection = $connection;
     }
 
-    public function addCheck($url_id, $status_code, $h1, $title, $description): void
+    public function addCheck(int $url_id, int $status_code, ?string $h1, ?string $title, ?string $description): void
     {
         $sql = "INSERT INTO url_checks (url_id, status_code, h1, title, description, created_at) VALUES (:url_id, :status_code, :h1, :title, :description, :created_at)";
         $stmt = $this->connection->prepare($sql);
@@ -27,7 +27,7 @@ class CheckRepository
         $stmt->execute();
     }
 
-    public function getCheck($url_id): array
+    public function getCheck(int $url_id): array
     {
         $checkData = [];
         $sql = "SELECT * FROM url_checks WHERE url_id = ?";
@@ -48,7 +48,7 @@ class CheckRepository
         return $checkData;
     }
 
-    public function getLastCheck($url_id)
+    public function getLastCheck(int $url_id)
     {
         $lastCheck = [];
         $sql = "SELECT * FROM url_checks WHERE url_id = ? ORDER BY created_at DESC LIMIT 1";

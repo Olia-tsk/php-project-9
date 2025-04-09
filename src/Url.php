@@ -65,7 +65,7 @@ class Url
         $this->last_check = $last_check;
     }
 
-    public function setStatusCode($status_code): void
+    public function setStatusCode(int $status_code): void
     {
         $this->status_code = $status_code;
     }
