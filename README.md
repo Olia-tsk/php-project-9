@@ -2,6 +2,8 @@
 
 [![Actions Status](https://github.com/Olia-tsk/php-project-9/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/Olia-tsk/php-project-9/actions)
 
+[![Maintainability](https://qlty.sh/badges/628a7b41-0810-4e22-9d7c-9f4e6e58695e/maintainability.svg)](https://qlty.sh/gh/Olia-tsk/projects/php-project-9)
+
 ## Проект модуля #3 Анализатор страниц
 
 ### О проекте:
