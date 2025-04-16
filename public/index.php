@@ -74,7 +74,18 @@ $app->get('/urls', function ($request, $response) use ($repo, $checkRepo) {
 
 $app->get('/urls/{id}', function ($request, $response, $args) use ($repo, $checkRepo) {
     $messages = $this->get('flash')->getMessages();
-    $url = $repo->find($args['id']);
+    $id = $args['id'];
+
+    if (!is_numeric($id)) {
+        return $this->get('renderer')->render($response->withStatus(404), "404.phtml",);
+    }
+
+    $url = $repo->find($id);
+
+    if (!$url) {
+        return $this->get('renderer')->render($response->withStatus(404), "404.phtml",);
+    }
+
     $params = [
         'flash' => $messages,
         'url' => $url,
@@ -130,7 +141,6 @@ $app->post('/urls/{url_id}/checks', function ($request, $response, $args) use ($
     } catch (Exception $e) {
         $this->get('flash')->addMessage('error', 'Произошла ошибка при проверке, не удалось подключиться');
     }
-
 
     $params = [
         'id' => $url_id,
