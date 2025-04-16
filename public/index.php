@@ -73,9 +73,13 @@ $app->get('/urls/{id}', function ($request, $response, $args) use ($repo, $check
 
 $app->post('/urls', function ($request, $response) use ($router, $repo) {
     $urlData = $request->getParsedBodyParam('url');
+
     $validator = new Validator();
     $errors = $validator->validate($urlData);
+
     if (count($errors) === 0) {
+        $parsedUrl = parse_url($urlData['name']);
+        $urlData['name'] = strtolower("{$parsedUrl['scheme']}://{$parsedUrl['host']}");
         $url = AnalyzerUrl::fromArray($urlData);
         $result = $repo->save($url);
         $id = $url->getId();
@@ -90,6 +94,7 @@ $app->post('/urls', function ($request, $response) use ($router, $repo) {
         'url' => new AnalyzerUrl(),
         'errors' => $errors
     ];
+
     return $this->get('renderer')->render($response->withStatus(422), 'index.phtml', $params);
 })->setName('urls.store');
 
