@@ -9,6 +9,7 @@ use Analyzer\UrlRepository;
 use DI\Container;
 use DiDom\Document;
 use GuzzleHttp\Client;
+use Slim\Exception\HttpNotFoundException;
 use Slim\Factory\AppFactory;
 use Slim\Flash\Messages;
 use Slim\Views\PhpRenderer;
@@ -37,10 +38,21 @@ $initSql = file_get_contents($initFilePath);
 $container->get(PDO::class)->exec($initSql);
 
 $app = AppFactory::createFromContainer($container);
-$app->addErrorMiddleware(true, true, true);
+$errorMiddleware = $app->addErrorMiddleware(true, true, true);
 
 $repo = $container->get(UrlRepository::class);
 $checkRepo = $container->get(CheckRepository::class);
+
+$router = $app->getRouteCollector()->getRouteParser();
+
+$app->get('/', function ($request, $response) {
+    return $this->get('renderer')->render($response, 'index.phtml');
+});
+
+$errorMiddleware->setErrorHandler(HttpNotFoundException::class, function ($request, $exception, $displayErrorDetails) {
+    $response = new \Slim\Psr7\Response();
+    return $this->get('renderer')->render($response->withStatus(404), "404.phtml");
+});
 
 $app->get('/urls', function ($request, $response) use ($repo, $checkRepo) {
     $urls = $repo->getEntities();
