@@ -58,7 +58,7 @@ $app->get('/urls', function ($request, $response) use ($repo, $checkRepo) {
 
     ];
     return $this->get('renderer')->render($response, 'urls.phtml', $params);
-})->setName('urls');
+})->setName('urls.index');
 
 $app->get('/urls/{id}', function ($request, $response, $args) use ($repo, $checkRepo) {
     $messages = $this->get('flash')->getMessages();
@@ -69,13 +69,7 @@ $app->get('/urls/{id}', function ($request, $response, $args) use ($repo, $check
         'checkData' => $checkRepo->getCheck($args['id'])
     ];
     return $this->get('renderer')->render($response, 'url.phtml', $params);
-})->setName('url');
-
-$router = $app->getRouteCollector()->getRouteParser();
-
-$app->get('/', function ($request, $response) {
-    return $this->get('renderer')->render($response, 'index.phtml');
-});
+})->setName('urls.show');
 
 $app->post('/urls', function ($request, $response) use ($router, $repo) {
     $urlData = $request->getParsedBodyParam('url');
@@ -89,7 +83,7 @@ $app->post('/urls', function ($request, $response) use ($router, $repo) {
         $params = [
             'id' => (string) $id
         ];
-        return $response->withRedirect($router->urlFor('url', $params));
+        return $response->withRedirect($router->urlFor('urls.show', $params));
     }
 
     $params = [
@@ -97,7 +91,7 @@ $app->post('/urls', function ($request, $response) use ($router, $repo) {
         'errors' => $errors
     ];
     return $this->get('renderer')->render($response->withStatus(422), 'index.phtml', $params);
-});
+})->setName('urls.store');
 
 $app->post('/urls/{url_id}/checks', function ($request, $response, $args) use ($router, $repo, $checkRepo) {
     $url_id = $args['url_id'];
@@ -125,7 +119,7 @@ $app->post('/urls/{url_id}/checks', function ($request, $response, $args) use ($
         'id' => $url_id,
     ];
 
-    return $response->withRedirect($router->urlFor('url', $params));
-})->setName('url_check');
+    return $response->withRedirect($router->urlFor('urls.show', $params));
+})->setName('urls.check');
 
 $app->run();
