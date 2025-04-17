@@ -42,19 +42,19 @@ cd php-project-9
 3. Установите зависимости:
 
 ```
-composer install
+make install
 ```
 
-4. Экспортируйте переменную окружения со своими данными:
+4. Создайте БД и экспортируйте переменную окружения со своими данными:
 
 ```
 export DATABASE_URL="postgresql://name:password@localhost:5432/database"
 ```
 
-5. Исполните все инструкции из файла:
+5. Создайте таблицы в БД выполнив команду:
 
 ```
-psql -a -d $DATABASE_URL -f database.sql
+make create-db
 ```
 
 6. Запустите проект:
