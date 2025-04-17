@@ -37,10 +37,6 @@ $container->set('flash', function () {
     return new Messages();
 });
 
-$initFilePath = implode('/', [dirname(__DIR__), 'database.sql']);
-$initSql = file_get_contents($initFilePath);
-$container->get(PDO::class)->exec($initSql);
-
 $app = AppFactory::createFromContainer($container);
 $errorMiddleware = $app->addErrorMiddleware(true, true, true);
 
