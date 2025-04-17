@@ -4,6 +4,8 @@
 
 [![Maintainability](https://qlty.sh/badges/628a7b41-0810-4e22-9d7c-9f4e6e58695e/maintainability.svg)](https://qlty.sh/gh/Olia-tsk/projects/php-project-9)
 
+[![make-lint](https://github.com/Olia-tsk/php-project-9/actions/workflows/make-lint.yml/badge.svg)](https://github.com/Olia-tsk/php-project-9/actions/workflows/make-lint.yml)
+
 ## Проект модуля #3 Анализатор страниц
 
 ### О проекте:
