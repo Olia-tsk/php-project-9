@@ -7,7 +7,7 @@ class Validator
     public function validate(array $urlData): array
     {
         $errors = [];
-        $pattern = 'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_\+.~#?&\/\/=]*)';
+        $pattern = '^(https?:\/\/)?([\w\.]+)\.([a-z]{2,6}\.?)(\/[\w\.]*)*\/?$';
         if (empty($urlData['name'])) {
             $errors['name'] = "URL не должен быть пустым";
         } elseif (!mb_ereg_match($pattern, $urlData['name'])) {

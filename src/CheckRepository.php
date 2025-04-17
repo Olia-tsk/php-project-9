@@ -15,7 +15,8 @@ class CheckRepository
 
     public function addCheck(int $url_id, int $status_code, ?string $h1, ?string $title, ?string $description): void
     {
-        $sql = "INSERT INTO url_checks (url_id, status_code, h1, title, description, created_at) VALUES (:url_id, :status_code, :h1, :title, :description, :created_at)";
+        $sql = "INSERT INTO url_checks (url_id, status_code, h1, title, description, created_at) 
+        VALUES (:url_id, :status_code, :h1, :title, :description, :created_at)";
         $stmt = $this->connection->prepare($sql);
         $created_at = Carbon::now();
         $stmt->bindParam(':url_id', $url_id);

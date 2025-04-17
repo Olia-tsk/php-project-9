@@ -24,7 +24,11 @@ $container->set('renderer', function () {
 
 $container->set(PDO::class, function () {
     $databaseUrl = parse_url($_ENV['DATABASE_URL']);
-    $connection = new PDO("pgsql:host=" . $databaseUrl['host'] . ";dbname=" . ltrim($databaseUrl['path'], '/'), $databaseUrl['user'], $databaseUrl['pass']);
+    $dbHost = $databaseUrl['host'];
+    $dbName = ltrim($databaseUrl['path'], '/');
+    $dbUser = $databaseUrl['user'];
+    $dbPass = $databaseUrl['pass'];
+    $connection = new PDO("pgsql:host=" . $dbHost . ";dbname=" . $dbName, $dbUser, $dbPass);
     $connection->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
     return $connection;
 });
