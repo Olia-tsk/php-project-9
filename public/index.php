@@ -72,7 +72,7 @@ $app->get('/urls', function ($request, $response) use ($repo, $checkRepo) {
     return $this->get('renderer')->render($response, 'urls.phtml', $params);
 })->setName('urls.index');
 
-$app->get('/urls/{id}', function ($request, $response, $args) use ($repo, $checkRepo) {
+$app->get('/urls/{id}', function ($request, $response, $args) use ($repo, $checkRepo, $router) {
     $messages = $this->get('flash')->getMessages();
     $id = $args['id'];
 
@@ -89,7 +89,8 @@ $app->get('/urls/{id}', function ($request, $response, $args) use ($repo, $check
     $params = [
         'flash' => $messages,
         'url' => $url,
-        'checkData' => $checkRepo->getCheck($args['id'])
+        'checkData' => $checkRepo->getCheck($args['id']),
+        'router' => $router
     ];
     return $this->get('renderer')->render($response, 'url.phtml', $params);
 })->setName('urls.show');
