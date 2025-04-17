@@ -7,3 +7,6 @@ install:
 
 lint:
 	composer exec --verbose phpcs -- --standard=PSR12 public src
+
+create-db:
+	psql -a -d $(DATABASE_URL) -f database.sql
