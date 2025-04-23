@@ -20,7 +20,7 @@
                                 <?= $url->getId() ?>
                             </td>
                             <td>
-                                <a href="/urls/<?= $url->getId() ?>">
+                                <a href="<?= $router->urlFor('urls.show', ['id' => $url->getId()]) ?>">
                                     <?= $url->getName() ?>
                                 </a>
                             </td>
