@@ -54,7 +54,7 @@ $errorMiddleware->setErrorHandler(HttpNotFoundException::class, function ($reque
     return $this->get('renderer')->render($response->withStatus(404), "404.phtml");
 });
 
-$app->get('/urls', function ($request, $response) use ($repo, $checkRepo) {
+$app->get('/urls', function ($request, $response) use ($repo, $checkRepo, $router) {
     $urls = $repo->getEntities();
     $urlsCheckData = array_map(function ($url) use ($checkRepo) {
         $lastCheck = $checkRepo->getLastCheck($url->getId());
@@ -66,8 +66,8 @@ $app->get('/urls', function ($request, $response) use ($repo, $checkRepo) {
     }, $urls);
 
     $params = [
-        'urlsCheckData' => $urlsCheckData
-
+        'urlsCheckData' => $urlsCheckData,
+        'router' => $router
     ];
     return $this->get('renderer')->render($response, 'urls.phtml', $params);
 })->setName('urls.index');
