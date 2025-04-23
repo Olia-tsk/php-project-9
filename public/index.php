@@ -120,29 +120,28 @@ $app->post('/urls', function ($request, $response) use ($router, $repo) {
     return $response->withRedirect($router->urlFor('urls.show', $params));
 })->setName('urls.store');
 
-$app->post('/urls/{url_id}/checks', function ($request, $response, $args) use ($router, $repo, $checkRepo) {
-    $url_id = $args['url_id'];
-    $url = $repo->find($url_id);
+$app->post('/urls/{url_id:[0-9]+}/checks', function ($request, $response, $args) use ($router, $repo) {
+    $urlId = $args['url_id'];
+    $url = $repo->find($urlId);
     $client = new Client();
 
     try {
-        $requestResult = $client->get($url->getName());
-        $status_code = $requestResult->getStatusCode();
-        $body = $requestResult->getBody()->getContents();
+        $responseResult = $client->get($url->getName());
+        $statusCode = $responseResult->getStatusCode();
+        $body = $responseResult->getBody()->getContents();
         $document = new Document($body);
-        $h1 = optional($document->first('h1'))->text() ?? null;
-        $title = optional($document->first('title'))->text() ?? null;
-        $descTag = $document->first('meta[name=description]') ?? null;
-        $description = $descTag ? $descTag->getAttribute('content') : null;
+        $h1 = optional($document->first('h1'))->text();
+        $title = optional($document->first('title'))->text();
+        $description = optional($document->first('meta[name=description]'))->getAttribute('content');
 
-        $checkRepo->addCheck($url_id, $status_code, $h1, $title, $description);
+        $this->get(CheckRepository::class)->addCheck($urlId, $statusCode, $h1, $title, $description);
         $this->get('flash')->addMessage('success', 'Страница успешно проверена');
     } catch (Exception $e) {
         $this->get('flash')->addMessage('error', 'Произошла ошибка при проверке, не удалось подключиться');
     }
 
     $params = [
-        'id' => $url_id,
+        'id' => $urlId,
     ];
 
     return $response->withRedirect($router->urlFor('urls.show', $params));
