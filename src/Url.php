@@ -9,8 +9,6 @@ class Url
     private ?int $id = null;
     private ?string $name = null;
     private ?string $created_at = null;
-    private ?string $last_check = null;
-    private ?int $status_code = null;
 
     public static function fromArray(array $urlData): Url
     {
@@ -35,16 +33,6 @@ class Url
         return $this->created_at;
     }
 
-    public function getLastCheck()
-    {
-        return $this->last_check;
-    }
-
-    public function getStatusCode()
-    {
-        return  $this->status_code;
-    }
-
     public function setId(int $id): void
     {
         $this->id = $id;
@@ -58,15 +46,5 @@ class Url
     public function setDate(string $created_at): void
     {
         $this->created_at = $created_at;
-    }
-
-    public function setLastCheck(string $last_check): void
-    {
-        $this->last_check = $last_check;
-    }
-
-    public function setStatusCode(?int $status_code): void
-    {
-        $this->status_code = $status_code;
     }
 }
