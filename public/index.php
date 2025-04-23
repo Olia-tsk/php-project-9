@@ -72,13 +72,9 @@ $app->get('/urls', function ($request, $response) use ($repo, $checkRepo, $route
     return $this->get('renderer')->render($response, 'urls.phtml', $params);
 })->setName('urls.index');
 
-$app->get('/urls/{id}', function ($request, $response, $args) use ($repo, $checkRepo, $router) {
+$app->get('/urls/{id:[0-9]+}', function ($request, $response, $args) use ($repo, $checkRepo, $router) {
     $messages = $this->get('flash')->getMessages();
     $id = $args['id'];
-
-    if (!is_numeric($id)) {
-        return $this->get('renderer')->render($response->withStatus(404), "404.phtml",);
-    }
 
     $url = $repo->find($id);
 
