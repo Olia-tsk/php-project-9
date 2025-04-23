@@ -97,25 +97,27 @@ $app->post('/urls', function ($request, $response) use ($router, $repo) {
     $validator = new Validator();
     $errors = $validator->validate($urlData);
 
-    if (count($errors) === 0) {
-        $parsedUrl = parse_url($urlData['name']);
-        $urlData['name'] = strtolower("{$parsedUrl['scheme']}://{$parsedUrl['host']}");
-        $url = AnalyzerUrl::fromArray($urlData);
-        $result = $repo->save($url);
-        $id = $url->getId();
-        $this->get('flash')->addMessage('success', $result);
+    if (count($errors) != 0) {
         $params = [
-            'id' => (string) $id
+            'url' => new Url(),
+            'errors' => $errors
         ];
-        return $response->withRedirect($router->urlFor('urls.show', $params));
+
+        return $this->get('renderer')->render($response->withStatus(422), 'index.phtml', $params);
     }
 
+    $parsedUrl = parse_url($urlData['name']);
+    $urlData['name'] = mb_strtolower("{$parsedUrl['scheme']}://{$parsedUrl['host']}");
+    $url = Url::fromArray($urlData);
+    $result = $repo->save($url);
+    $id = $url->getId();
+    $this->get('flash')->addMessage('success', $result);
+
     $params = [
-        'url' => new AnalyzerUrl(),
-        'errors' => $errors
+        'id' => (string) $id
     ];
 
-    return $this->get('renderer')->render($response->withStatus(422), 'index.phtml', $params);
+    return $response->withRedirect($router->urlFor('urls.show', $params));
 })->setName('urls.store');
 
 $app->post('/urls/{url_id}/checks', function ($request, $response, $args) use ($router, $repo, $checkRepo) {
