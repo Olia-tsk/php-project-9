@@ -1,14 +1,6 @@
 <?= $this->fetch('header.phtml') ?>
 
-<?php if (!empty($flash['success'])): ?>
-    <div class="alert alert-success"><?= htmlspecialchars($flash['success'][0]) ?></div>
-<?php endif; ?>
-<?php if (!empty($flash['info'])): ?>
-    <div class="alert alert-success"><?= htmlspecialchars($flash['info'][0]) ?></div>
-<?php endif; ?>
-<?php if (!empty($flash['error'])): ?>
-    <div class="alert alert-danger"><?= htmlspecialchars($flash['error'][0]) ?></div>
-<?php endif; ?>
+<?= $this->fetch('alerts.phtml', ['flash' => $flash]) ?>
 
 <main class="flex-grow-1">
     <div class="container-lg mt-3">
