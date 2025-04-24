@@ -60,10 +60,13 @@ $app->get('/urls', function ($request, $response) use ($repo, $checkRepo, $route
     $urlsCheckData = array_map(function ($url) use ($checkRepo) {
         $lastCheck = $checkRepo->getLastCheck($url->getId());
         if ($lastCheck) {
-            $url->setLastCheck($lastCheck['created_at']);
-            $url->setStatusCode($lastCheck['status_code']);
+            $check = new Check();
+            $check->setUrlId($lastCheck['url_id']);
+            $check->setName($url->getName());
+            $check->setLastCheck($lastCheck['created_at']);
+            $check->setStatusCode($lastCheck['status_code']);
         }
-        return $url;
+        return $check;
     }, $urls);
 
     $params = [
