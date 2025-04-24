@@ -17,10 +17,10 @@
                     <?php foreach ($urlsCheckData as $url): ?>
                         <tr>
                             <td>
-                                <?= $url->getId() ?>
+                                <?= $url->getUrlId() ?>
                             </td>
                             <td>
-                                <a href="<?= $router->urlFor('urls.show', ['id' => $url->getId()]) ?>">
+                                <a href="<?= $router->urlFor('urls.show', ['id' => $url->getUrlId()]) ?>">
                                     <?= $url->getName() ?>
                                 </a>
                             </td>
