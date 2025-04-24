@@ -2,6 +2,7 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
+use Analyzer\Check;
 use Analyzer\Url as Url;
 use Analyzer\CheckRepository;
 use Analyzer\Validator;
