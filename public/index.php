@@ -151,11 +151,7 @@ $app->post('/urls/{url_id:[0-9]+}/checks', function ($request, $response, $args)
         $this->get('flash')->addMessage('error', 'Произошла ошибка при проверке, не удалось подключиться');
     }
 
-    $params = [
-        'id' => $urlId,
-    ];
-
-    return $response->withRedirect($router->urlFor('urls.show', $params));
+    return $response->withRedirect($router->urlFor('urls.show', ['id' => (int) $urlId]));
 })->setName('urls.check');
 
 $app->run();
