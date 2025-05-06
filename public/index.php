@@ -84,14 +84,14 @@ $app->get('/urls/{id:[0-9]+}', function ($request, $response, $args) use ($urlRe
 
     $url = $urlRepo->find($id);
 
-    if (!$url) {
+    if (is_null($url)) {
         return $this->get('renderer')->render($response->withStatus(404), "404.phtml",);
     }
 
     $params = [
         'flash' => $messages,
         'url' => $url,
-        'checkData' => $checkRepo->getCheck($args['id']),
+        'checkData' => $checkRepo->getChecks($args['id']),
         'router' => $router
     ];
     return $this->get('renderer')->render($response, 'url.phtml', $params);
