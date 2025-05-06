@@ -21,11 +21,11 @@
                             </td>
                             <td>
                                 <a href="<?= $router->urlFor('urls.show', ['id' => $url->getUrlId()]) ?>">
-                                    <?= $url->getName() ?>
+                                    <?= $urlRepo->getUrlName($url->getUrlId()) ?>
                                 </a>
                             </td>
                             <td>
-                                <?= $url->getLastCheck() ?>
+                                <?= $url->getCheckDate() ?>
                             </td>
                             <td>
                                 <?= $url->getStatusCode() ?>
