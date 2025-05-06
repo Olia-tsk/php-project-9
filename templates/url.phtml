@@ -41,12 +41,18 @@
             <tbody>
                 <?php foreach ($checkData as $check) : ?>
                     <tr>
-                        <td><?= $check['id'] ?></td>
-                        <td><?= $check['status_code'] ?></td>
-                        <td class="text-break"><?= $check['h1'] ?></td>
-                        <td class="text-break"><?= $check['title'] ?></td>
-                        <td class="text-break"><?= $check['description'] ?></td>
-                        <td><?= $check['created_at'] ?></td>
+                        <td><?= $check->getId() ?></td>
+                        <td><?= $check->getStatusCode() ?></td>
+                        <td class="text-break">
+                            <?= $check->getH1() ?>
+                        </td>
+                        <td class="text-break">
+                            <?= $check->getTitle() ?>
+                        </td>
+                        <td class="text-break">
+                            <?= $check->getDescription() ?>
+                        </td>
+                        <td><?= $check->getCheckDate() ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
