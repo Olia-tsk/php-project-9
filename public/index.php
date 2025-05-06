@@ -105,7 +105,6 @@ $app->post('/urls', function ($request, $response) use ($router, $urlRepo) {
 
     if (count($errors) != 0) {
         $params = [
-            'url' => new Url(),
             'errors' => $errors
         ];
 
@@ -114,16 +113,22 @@ $app->post('/urls', function ($request, $response) use ($router, $urlRepo) {
 
     $parsedUrl = parse_url($urlData['name']);
     $urlData['name'] = mb_strtolower("{$parsedUrl['scheme']}://{$parsedUrl['host']}");
+
     $url = $urlRepo->findByName($urlData['name']);
+
+    if (!is_null($url)) {
+        $this->get('flash')->addMessage('success', 'Страница уже существует');
+        $id = $url->getId();
+        return $response->withRedirect($router->urlFor('urls.show', ['id' => (int) $id]));
+    }
+
+    $url = new Url();
+    $url->setName($urlData['name']);
     $urlRepo->save($url);
     $id = $url->getId();
-    $this->get('flash')->addMessage('success', $result);
+    $this->get('flash')->addMessage('success', 'Страница успешно добавлена');
 
-    $params = [
-        'id' => (string) $id
-    ];
-
-    return $response->withRedirect($router->urlFor('urls.show', $params));
+    return $response->withRedirect($router->urlFor('urls.show', ['id' => (int) $id]));
 })->setName('urls.store');
 
 $app->post('/urls/{url_id:[0-9]+}/checks', function ($request, $response, $args) use ($router, $urlRepo) {
