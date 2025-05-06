@@ -44,17 +44,21 @@ class UrlRepository
         $url->setId($id);
     }
 
-    public function find(int $id)
+    public function find(int $id): ?Url
     {
         $sql = "SELECT * FROM urls WHERE id = ?";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute([$id]);
+
         if ($row = $stmt->fetch()) {
-            $url = Url::fromArray($row);
+            $url = new Url();
             $url->setId($row['id']);
+            $url->setName($row['name']);
             $url->setDate($row['created_at']);
             return $url;
         }
+
+        return null;
     }
 
     private function findByName(string $name)
