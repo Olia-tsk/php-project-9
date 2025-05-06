@@ -80,16 +80,16 @@ class UrlRepository
         return null;
     }
 
-    private function create(Url $url): void
+    public function getUrlName(int $url_id): string
     {
-        $sql = "INSERT INTO urls (name, created_at) VALUES (:name, :created_at)";
+        $sql = "SELECT name FROM urls WHERE id = ?";
         $stmt = $this->connection->prepare($sql);
-        $name = $url->getName();
-        $date = $url->getDate();
-        $stmt->bindParam(':name', $name);
-        $stmt->bindParam(':created_at', $date);
-        $stmt->execute();
-        $id = (int) $this->connection->lastInsertId();
-        $url->setId($id);
+        $stmt->execute([$url_id]);
+
+        if ($row = $stmt->fetch()) {
+            return $row['name'];
+        }
+
+        return '';
     }
 }
