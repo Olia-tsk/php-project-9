@@ -136,8 +136,12 @@ $app->post('/urls', function ($request, $response) use ($router, $urlRepo) {
 $app->post('/urls/{url_id:[0-9]+}/checks', function ($request, $response, $args) use ($router, $urlRepo) {
     $urlId = $args['url_id'];
     $url = $urlRepo->find($urlId);
-    $client = new Client();
 
+    if (is_null($url)) {
+        return $this->get('renderer')->render($response->withStatus(404), "404.phtml",);
+    }
+
+    $client = new Client();
     try {
         $responseResult = $client->get($url->getName());
         $statusCode = $responseResult->getStatusCode();
