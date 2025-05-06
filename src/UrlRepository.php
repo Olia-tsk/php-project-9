@@ -46,7 +46,7 @@ class UrlRepository
         $url->setId($id);
     }
 
-    public function find(int $id): ?Url
+    public function find(int $id)
     {
         $sql = "SELECT * FROM urls WHERE id = ?";
         $stmt = $this->connection->prepare($sql);
@@ -59,8 +59,6 @@ class UrlRepository
             $url->setDate($row['created_at']);
             return $url;
         }
-
-        return null;
     }
 
     public function findByName(string $name): ?Url

@@ -133,10 +133,11 @@ $app->post('/urls', function ($request, $response) use ($router, $urlRepo) {
     return $response->withRedirect($router->urlFor('urls.show', ['id' => (string) $id]));
 })->setName('urls.store');
 
-$app->post('/urls/{url_id}/checks', function ($request, $response, $args) use ($router, $urlRepo) {
+$app->post('/urls/{url_id:[0-9]+}/checks', function ($request, $response, $args) use ($router, $urlRepo) {
     $urlId = $args['url_id'];
     $url = $urlRepo->find($urlId);
     $client = new Client();
+
     try {
         $responseResult = $client->get($url->getName());
         $statusCode = $responseResult->getStatusCode();
