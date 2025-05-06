@@ -30,20 +30,17 @@ class UrlRepository
         return $urls;
     }
 
-    public function save(Url $url)
+    public function save(Url $url): void
     {
-        $message = '';
-        $urlId = $this->findByName($url->getName());
-
-        if ($urlId) {
-            $url->setId($urlId);
-            $message = 'Страница уже существует';
-        } else {
-            $this->create($url);
-            $message = 'Страница успешно добавлена';
-        }
-
-        return $message;
+        $sql = "INSERT INTO urls (name, created_at) VALUES (:name, :created_at)";
+        $stmt = $this->connection->prepare($sql);
+        $name = $url->getName();
+        $date = Carbon::now();
+        $stmt->bindParam(':name', $name);
+        $stmt->bindParam(':created_at', $date);
+        $stmt->execute();
+        $id = (int) $this->connection->lastInsertId();
+        $url->setId($id);
     }
 
     public function find(int $id)
