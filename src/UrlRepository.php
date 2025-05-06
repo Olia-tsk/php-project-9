@@ -3,6 +3,7 @@
 namespace Analyzer;
 
 use Analyzer\Url;
+use Carbon\Carbon;
 
 class UrlRepository
 {
