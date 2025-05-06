@@ -28,41 +28,43 @@ class CheckRepository
         $stmt->execute();
     }
 
-    public function getCheck(int $url_id): array
+    public function getChecks(int $url_id): array
     {
         $checkData = [];
-        $sql = "SELECT * FROM url_checks WHERE url_id = ?";
+        $sql = "SELECT * FROM url_checks WHERE url_id = ? ORDER BY created_at DESC";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute([$url_id]);
 
         while ($row = $stmt->fetch()) {
-            $check['id'] = $row['id'];
-            $check['url_id'] = $row['url_id'];
-            $check['status_code'] = $row['status_code'];
-            $check['h1'] = $row['h1'];
-            $check['title'] = $row['title'];
-            $check['description'] = $row['description'];
-            $check['created_at'] = $row['created_at'];
+            $check = new Check;
+            $check->setId($row['id']);
+            $check->setUrlId($row['url_id']);
+            $check->setStatusCode($row['status_code']);
+            $check->setH1($row['h1']);
+            $check->setTitle($row['title']);
+            $check->setDescription($row['description']);
+            $check->setCheckDate($row['created_at']);
             $checkData[] = $check;
         }
 
         return $checkData;
     }
 
-    public function getLastCheck(int $url_id)
+    public function getLastCheck(int $url_id): ?Check
     {
-        $lastCheck = [];
         $sql = "SELECT * FROM url_checks WHERE url_id = ? ORDER BY created_at DESC LIMIT 1";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute([$url_id]);
 
         if ($row = $stmt->fetch()) {
-            $lastCheck['id'] = $row['id'];
-            $lastCheck['url_id'] = $row['url_id'];
-            $lastCheck['status_code'] = $row['status_code'];
-            $lastCheck['created_at'] = $row['created_at'];
+            $lastCheck = new Check();
+            $lastCheck->setId($row['id']);
+            $lastCheck->setUrlId($row['url_id']);
+            $lastCheck->setStatusCode($row['status_code']);
+            $lastCheck->setCheckDate($row['created_at']);
+            return $lastCheck;
         }
 
-        return $lastCheck;
+        return null;
     }
 }
