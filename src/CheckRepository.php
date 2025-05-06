@@ -36,7 +36,7 @@ class CheckRepository
         $stmt->execute([$url_id]);
 
         while ($row = $stmt->fetch()) {
-            $check = new Check;
+            $check = new Check();
             $check->setId($row['id']);
             $check->setUrlId($row['url_id']);
             $check->setStatusCode($row['status_code']);
