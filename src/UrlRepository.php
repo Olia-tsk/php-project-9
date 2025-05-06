@@ -61,17 +61,21 @@ class UrlRepository
         return null;
     }
 
-    private function findByName(string $name)
+    public function findByName(string $name): ?Url
     {
         $sql = "SELECT * FROM urls WHERE name = ?";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute([$name]);
+
         if ($row = $stmt->fetch()) {
-            $id = $row['id'];
-            return $id;
+            $url = new Url();
+            $url->setId($row['id']);
+            $url->setName($row['name']);
+            $url->setDate($row['created_at']);
+            return $url;
         }
 
-        return false;
+        return null;
     }
 
     private function create(Url $url): void
