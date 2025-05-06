@@ -15,6 +15,8 @@ use Slim\Factory\AppFactory;
 use Slim\Flash\Messages;
 use Slim\Views\PhpRenderer;
 
+use function DI\string;
+
 session_start();
 
 $container = new Container();
@@ -119,7 +121,7 @@ $app->post('/urls', function ($request, $response) use ($router, $urlRepo) {
     if (!is_null($url)) {
         $this->get('flash')->addMessage('success', 'Страница уже существует');
         $id = $url->getId();
-        return $response->withRedirect($router->urlFor('urls.show', ['id' => (int) $id]));
+        return $response->withRedirect($router->urlFor('urls.show', ['id' => (string) $id]));
     }
 
     $url = new Url();
@@ -128,7 +130,7 @@ $app->post('/urls', function ($request, $response) use ($router, $urlRepo) {
     $id = $url->getId();
     $this->get('flash')->addMessage('success', 'Страница успешно добавлена');
 
-    return $response->withRedirect($router->urlFor('urls.show', ['id' => (int) $id]));
+    return $response->withRedirect($router->urlFor('urls.show', ['id' => (string) $id]));
 })->setName('urls.store');
 
 $app->post('/urls/{url_id:[0-9]+}/checks', function ($request, $response, $args) use ($router, $urlRepo) {
@@ -151,7 +153,7 @@ $app->post('/urls/{url_id:[0-9]+}/checks', function ($request, $response, $args)
         $this->get('flash')->addMessage('error', 'Произошла ошибка при проверке, не удалось подключиться');
     }
 
-    return $response->withRedirect($router->urlFor('urls.show', ['id' => (int) $urlId]));
+    return $response->withRedirect($router->urlFor('urls.show', ['id' => (string) $urlId]));
 })->setName('urls.check');
 
 $app->run();
