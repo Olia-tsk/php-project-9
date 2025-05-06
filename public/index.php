@@ -41,7 +41,7 @@ $container->set('flash', function () {
 $app = AppFactory::createFromContainer($container);
 $errorMiddleware = $app->addErrorMiddleware(true, true, true);
 
-$repo = $container->get(UrlRepository::class);
+$urlRepo = $container->get(UrlRepository::class);
 $checkRepo = $container->get(CheckRepository::class);
 
 $router = $app->getRouteCollector()->getRouteParser();
@@ -55,8 +55,8 @@ $errorMiddleware->setErrorHandler(HttpNotFoundException::class, function ($reque
     return $this->get('renderer')->render($response->withStatus(404), "404.phtml");
 });
 
-$app->get('/urls', function ($request, $response) use ($repo, $checkRepo, $router) {
-    $urls = $repo->getEntities();
+$app->get('/urls', function ($request, $response) use ($urlRepo, $checkRepo, $router) {
+    $urls = $urlRepo->getEntities();
     $urlsCheckData = array_map(function ($url) use ($checkRepo) {
         $lastCheck = $checkRepo->getLastCheck($url->getId());
         if ($lastCheck) {
@@ -71,16 +71,16 @@ $app->get('/urls', function ($request, $response) use ($repo, $checkRepo, $route
 
     $params = [
         'urlsCheckData' => $urlsCheckData,
-        'router' => $router
+        'urlRepo' => $urlRepo,
     ];
     return $this->get('renderer')->render($response, 'urls.phtml', $params);
 })->setName('urls.index');
 
-$app->get('/urls/{id:[0-9]+}', function ($request, $response, $args) use ($repo, $checkRepo, $router) {
+$app->get('/urls/{id:[0-9]+}', function ($request, $response, $args) use ($urlRepo, $checkRepo, $router) {
     $messages = $this->get('flash')->getMessages();
     $id = $args['id'];
 
-    $url = $repo->find($id);
+    $url = $urlRepo->find($id);
 
     if (!$url) {
         return $this->get('renderer')->render($response->withStatus(404), "404.phtml",);
@@ -95,7 +95,7 @@ $app->get('/urls/{id:[0-9]+}', function ($request, $response, $args) use ($repo,
     return $this->get('renderer')->render($response, 'url.phtml', $params);
 })->setName('urls.show');
 
-$app->post('/urls', function ($request, $response) use ($router, $repo) {
+$app->post('/urls', function ($request, $response) use ($router, $urlRepo) {
     $urlData = $request->getParsedBodyParam('url');
 
     $validator = new Validator();
@@ -112,8 +112,8 @@ $app->post('/urls', function ($request, $response) use ($router, $repo) {
 
     $parsedUrl = parse_url($urlData['name']);
     $urlData['name'] = mb_strtolower("{$parsedUrl['scheme']}://{$parsedUrl['host']}");
-    $url = Url::fromArray($urlData);
-    $result = $repo->save($url);
+    $url = $urlRepo->findByName($urlData['name']);
+    $urlRepo->save($url);
     $id = $url->getId();
     $this->get('flash')->addMessage('success', $result);
 
@@ -124,9 +124,9 @@ $app->post('/urls', function ($request, $response) use ($router, $repo) {
     return $response->withRedirect($router->urlFor('urls.show', $params));
 })->setName('urls.store');
 
-$app->post('/urls/{url_id:[0-9]+}/checks', function ($request, $response, $args) use ($router, $repo) {
+$app->post('/urls/{url_id:[0-9]+}/checks', function ($request, $response, $args) use ($router, $urlRepo) {
     $urlId = $args['url_id'];
-    $url = $repo->find($urlId);
+    $url = $urlRepo->find($urlId);
     $client = new Client();
 
     try {
