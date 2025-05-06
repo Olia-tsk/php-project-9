@@ -145,8 +145,7 @@ $app->post('/urls/{url_id:[0-9]+}/checks', function ($request, $response, $args)
         $document = new Document($body);
         $h1 = optional($document->first('h1'))->text();
         $title = optional($document->first('title'))->text();
-        $description = optional($document->first('meta[name=description]'))->getAttribute('content');
-
+        $description = optional($document->first('meta[name=description]'))->getAttribute('content') ?? null;
         $this->get(CheckRepository::class)->addCheck($urlId, $statusCode, $h1, $title, $description);
         $this->get('flash')->addMessage('success', 'Страница успешно проверена');
     } catch (Exception $e) {
