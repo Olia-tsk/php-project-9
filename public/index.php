@@ -56,21 +56,23 @@ $errorMiddleware->setErrorHandler(HttpNotFoundException::class, function ($reque
 });
 
 $app->get('/urls', function ($request, $response) use ($urlRepo, $checkRepo, $router) {
+
     $urls = $urlRepo->getEntities();
+
     $urlsCheckData = array_map(function ($url) use ($checkRepo) {
         $lastCheck = $checkRepo->getLastCheck($url->getId());
-        if ($lastCheck) {
-            $check = new Check();
-            $check->setUrlId($lastCheck['url_id']);
-            $check->setName($url->getName());
-            $check->setLastCheck($lastCheck['created_at']);
-            $check->setStatusCode($lastCheck['status_code']);
+
+        if (is_null($lastCheck)) {
+            $lastCheck = new Check();
+            $lastCheck->setUrlId($url->getId());
         }
-        return $check;
+
+        return $lastCheck;
     }, $urls);
 
     $params = [
         'urlsCheckData' => $urlsCheckData,
+        'router' => $router,
         'urlRepo' => $urlRepo,
     ];
     return $this->get('renderer')->render($response, 'urls.phtml', $params);
