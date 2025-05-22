@@ -43,19 +43,19 @@ $container->set('flash', function () {
 
 $app = AppFactory::createFromContainer($container);
 
+$router = $app->getRouteCollector()->getRouteParser();
+
 $errorMiddleware = $app->addErrorMiddleware(true, true, true);
-$errorMiddleware->setErrorHandler(HttpNotFoundException::class, function ($request, $exception, $displayErrorDetails) use ($renderer) {
+$errorMiddleware->setErrorHandler(HttpNotFoundException::class, function ($request, $exception, $displayErrorDetails) use ($renderer, $router) {
     $response = new \Slim\Psr7\Response();
-    return $renderer->render($response->withStatus(404), "404.phtml");
+    return $renderer->render($response->withStatus(404), "404.phtml", ['router' => $router]);
 });
 
 $urlRepo = $container->get(UrlRepository::class);
 $checkRepo = $container->get(CheckRepository::class);
 
-$router = $app->getRouteCollector()->getRouteParser();
-
-$app->get('/', function ($request, $response) use ($renderer) {
-    return $renderer->render($response, 'index.phtml');
+$app->get('/', function ($request, $response) use ($renderer, $router) {
+    return $renderer->render($response, 'index.phtml', ['router' => $router]);
 })->setName('home');
 
 $app->get('/urls', function ($request, $response) use ($urlRepo, $checkRepo, $router, $renderer) {
@@ -88,7 +88,7 @@ $app->get('/urls/{id:[0-9]+}', function ($request, $response, $args) use ($urlRe
     $url = $urlRepo->find($id);
 
     if (is_null($url)) {
-        return $renderer->render($response->withStatus(404), "404.phtml",);
+        return $renderer->render($response->withStatus(404), "404.phtml", ['router' => $router]);
     }
 
     $params = [
@@ -108,7 +108,8 @@ $app->post('/urls', function ($request, $response) use ($router, $urlRepo, $rend
 
     if (count($errors) != 0) {
         $params = [
-            'errors' => $errors
+            'errors' => $errors,
+            'router' => $router
         ];
 
         return $renderer->render($response->withStatus(422), 'index.phtml', $params);
