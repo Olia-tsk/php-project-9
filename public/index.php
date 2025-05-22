@@ -10,6 +10,8 @@ use Analyzer\UrlRepository;
 use DI\Container;
 use DiDom\Document;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\RequestException;
 use Slim\Exception\HttpNotFoundException;
 use Slim\Factory\AppFactory;
 use Slim\Flash\Messages;
@@ -149,7 +151,7 @@ $app->post('/urls/{url_id:[0-9]+}/checks', function ($request, $response, $args)
         $description = $descriptionTag ? $descriptionTag->getAttribute('content') : null;
         $this->get(CheckRepository::class)->addCheck($urlId, $statusCode, $h1, $title, $description);
         $this->get('flash')->addMessage('success', 'Страница успешно проверена');
-    } catch (Exception $e) {
+    } catch (RequestException | ConnectException $e) {
         $this->get('flash')->addMessage('error', 'Произошла ошибка при проверке, не удалось подключиться');
     }
 
