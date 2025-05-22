@@ -78,7 +78,7 @@ $app->get('/urls', function ($request, $response) use ($urlRepo, $checkRepo, $ro
         'router' => $router,
         'urlRepo' => $urlRepo,
     ];
-    return $renderer->render($response, 'urls.phtml', $params);
+    return $renderer->render($response, 'urls/index.phtml', $params);
 })->setName('urls.index');
 
 $app->get('/urls/{id:[0-9]+}', function ($request, $response, $args) use ($urlRepo, $checkRepo, $router, $renderer) {
@@ -97,7 +97,7 @@ $app->get('/urls/{id:[0-9]+}', function ($request, $response, $args) use ($urlRe
         'checkData' => $checkRepo->getChecks($args['id']),
         'router' => $router
     ];
-    return $renderer->render($response, 'url.phtml', $params);
+    return $renderer->render($response, 'urls/show.phtml', $params);
 })->setName('urls.show');
 
 $app->post('/urls', function ($request, $response) use ($router, $urlRepo, $renderer) {
