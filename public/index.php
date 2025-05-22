@@ -45,6 +45,11 @@ $container->set('flash', function () {
 $app = AppFactory::createFromContainer($container);
 $errorMiddleware = $app->addErrorMiddleware(true, true, true);
 
+$errorMiddleware->setErrorHandler(HttpNotFoundException::class, function ($request, $exception, $displayErrorDetails) {
+    $response = new \Slim\Psr7\Response();
+    return $this->get('renderer')->render($response->withStatus(404), "404.phtml");
+});
+
 $urlRepo = $container->get(UrlRepository::class);
 $checkRepo = $container->get(CheckRepository::class);
 
@@ -53,11 +58,6 @@ $router = $app->getRouteCollector()->getRouteParser();
 $app->get('/', function ($request, $response) {
     return $this->get('renderer')->render($response, 'index.phtml');
 })->setName('home');
-
-$errorMiddleware->setErrorHandler(HttpNotFoundException::class, function ($request, $exception, $displayErrorDetails) {
-    $response = new \Slim\Psr7\Response();
-    return $this->get('renderer')->render($response->withStatus(404), "404.phtml");
-});
 
 $app->get('/urls', function ($request, $response) use ($urlRepo, $checkRepo, $router) {
 
