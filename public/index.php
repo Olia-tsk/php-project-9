@@ -5,7 +5,7 @@ require __DIR__ . '/../vendor/autoload.php';
 use Analyzer\UrlCheck;
 use Analyzer\Url as Url;
 use Analyzer\CheckRepository;
-use Analyzer\Validator;
+use Analyzer\UrlValidator;
 use Analyzer\UrlRepository;
 use DI\Container;
 use DiDom\Document;
@@ -104,7 +104,7 @@ $app->get('/urls/{id:[0-9]+}', function ($request, $response, $args) use ($urlRe
 $app->post('/urls', function ($request, $response) use ($router, $urlRepo) {
     $urlData = $request->getParsedBodyParam('url');
 
-    $validator = new Validator();
+    $validator = new UrlValidator();
     $errors = $validator->validate($urlData);
 
     if (count($errors) != 0) {

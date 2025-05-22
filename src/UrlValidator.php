@@ -2,18 +2,25 @@
 
 namespace Analyzer;
 
-class Validator
+use Valitron\Validator as ValitronValidator;
+
+class UrlValidator
 {
     public function validate(array $urlData): array
     {
         $errors = [];
-        $pattern = '^(https?:\/\/)?([\w\.]+)\.([a-z]{2,6}\.?)(\/[\w\.]*)*\/?$';
+
         if (empty($urlData['name'])) {
             $errors['name'] = "URL не должен быть пустым";
-        } elseif (!mb_ereg_match($pattern, $urlData['name'])) {
+            return $errors;
+        }
+
+        $validator = new ValitronValidator($urlData);
+        $validator->rule('url', 'name');
+        $validator->rule('lengthMax', 'name', 255);
+
+        if (!$validator->validate()) {
             $errors['name'] = "Некорректный URL";
-        } elseif (strlen($urlData['name']) > 255) {
-            $errors['name'] = "Слишком длинный URL";
         }
 
         return $errors;
