@@ -2,7 +2,7 @@
 
 namespace Analyzer;
 
-class Check
+class UrlCheck
 {
     private ?int $id = null;
     private ?int $url_id = null;

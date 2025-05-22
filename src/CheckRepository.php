@@ -36,7 +36,7 @@ class CheckRepository
         $stmt->execute([$url_id]);
 
         while ($row = $stmt->fetch()) {
-            $check = new Check();
+            $check = new UrlCheck();
             $check->setId($row['id']);
             $check->setUrlId($row['url_id']);
             $check->setStatusCode($row['status_code']);
@@ -50,14 +50,14 @@ class CheckRepository
         return $checkData;
     }
 
-    public function getLastCheck(int $url_id): ?Check
+    public function getLastCheck(int $url_id): ?UrlCheck
     {
         $sql = "SELECT * FROM url_checks WHERE url_id = ? ORDER BY created_at DESC LIMIT 1";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute([$url_id]);
 
         if ($row = $stmt->fetch()) {
-            $lastCheck = new Check();
+            $lastCheck = new UrlCheck();
             $lastCheck->setId($row['id']);
             $lastCheck->setUrlId($row['url_id']);
             $lastCheck->setStatusCode($row['status_code']);

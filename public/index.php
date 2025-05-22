@@ -2,7 +2,7 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Analyzer\Check;
+use Analyzer\UrlCheck;
 use Analyzer\Url as Url;
 use Analyzer\CheckRepository;
 use Analyzer\Validator;
@@ -65,7 +65,7 @@ $app->get('/urls', function ($request, $response) use ($urlRepo, $checkRepo, $ro
         $lastCheck = $checkRepo->getLastCheck($url->getId());
 
         if (is_null($lastCheck)) {
-            $lastCheck = new Check();
+            $lastCheck = new UrlCheck();
             $lastCheck->setUrlId($url->getId());
         }
 
