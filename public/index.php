@@ -21,11 +21,10 @@ use function DI\string;
 
 session_start();
 
-$container = new Container();
+$renderer = new PhpRenderer(__DIR__ . '/../templates');
+$renderer->setLayout('layouts/layout.php');
 
-$container->set('renderer', function () {
-    return new PhpRenderer(__DIR__ . '/../templates');
-});
+$container = new Container();
 
 $container->set(PDO::class, function () {
     $databaseUrl = parse_url($_ENV['DATABASE_URL']);
@@ -43,11 +42,11 @@ $container->set('flash', function () {
 });
 
 $app = AppFactory::createFromContainer($container);
-$errorMiddleware = $app->addErrorMiddleware(true, true, true);
 
-$errorMiddleware->setErrorHandler(HttpNotFoundException::class, function ($request, $exception, $displayErrorDetails) {
+$errorMiddleware = $app->addErrorMiddleware(true, true, true);
+$errorMiddleware->setErrorHandler(HttpNotFoundException::class, function ($request, $exception, $displayErrorDetails) use ($renderer) {
     $response = new \Slim\Psr7\Response();
-    return $this->get('renderer')->render($response->withStatus(404), "404.phtml");
+    return $renderer->render($response->withStatus(404), "404.phtml");
 });
 
 $urlRepo = $container->get(UrlRepository::class);
@@ -55,11 +54,11 @@ $checkRepo = $container->get(CheckRepository::class);
 
 $router = $app->getRouteCollector()->getRouteParser();
 
-$app->get('/', function ($request, $response) {
-    return $this->get('renderer')->render($response, 'index.phtml');
+$app->get('/', function ($request, $response) use ($renderer) {
+    return $renderer->render($response, 'index.phtml');
 })->setName('home');
 
-$app->get('/urls', function ($request, $response) use ($urlRepo, $checkRepo, $router) {
+$app->get('/urls', function ($request, $response) use ($urlRepo, $checkRepo, $router, $renderer) {
 
     $urls = $urlRepo->getEntities();
 
@@ -79,17 +78,17 @@ $app->get('/urls', function ($request, $response) use ($urlRepo, $checkRepo, $ro
         'router' => $router,
         'urlRepo' => $urlRepo,
     ];
-    return $this->get('renderer')->render($response, 'urls.phtml', $params);
+    return $renderer->render($response, 'urls.phtml', $params);
 })->setName('urls.index');
 
-$app->get('/urls/{id:[0-9]+}', function ($request, $response, $args) use ($urlRepo, $checkRepo, $router) {
+$app->get('/urls/{id:[0-9]+}', function ($request, $response, $args) use ($urlRepo, $checkRepo, $router, $renderer) {
     $messages = $this->get('flash')->getMessages();
     $id = $args['id'];
 
     $url = $urlRepo->find($id);
 
     if (is_null($url)) {
-        return $this->get('renderer')->render($response->withStatus(404), "404.phtml",);
+        return $renderer->render($response->withStatus(404), "404.phtml",);
     }
 
     $params = [
@@ -98,10 +97,10 @@ $app->get('/urls/{id:[0-9]+}', function ($request, $response, $args) use ($urlRe
         'checkData' => $checkRepo->getChecks($args['id']),
         'router' => $router
     ];
-    return $this->get('renderer')->render($response, 'url.phtml', $params);
+    return $renderer->render($response, 'url.phtml', $params);
 })->setName('urls.show');
 
-$app->post('/urls', function ($request, $response) use ($router, $urlRepo) {
+$app->post('/urls', function ($request, $response) use ($router, $urlRepo, $renderer) {
     $urlData = $request->getParsedBodyParam('url');
 
     $validator = new UrlValidator();
@@ -112,7 +111,7 @@ $app->post('/urls', function ($request, $response) use ($router, $urlRepo) {
             'errors' => $errors
         ];
 
-        return $this->get('renderer')->render($response->withStatus(422), 'index.phtml', $params);
+        return $renderer->render($response->withStatus(422), 'index.phtml', $params);
     }
 
     $parsedUrl = parse_url($urlData['name']);

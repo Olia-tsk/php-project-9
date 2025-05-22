@@ -30,3 +30,27 @@
             </div>
         </nav>
     </header>
+
+    <?php if (!empty($flash['success'])): ?>
+        <div class="alert alert-success"><?= htmlspecialchars($flash['success'][0]) ?></div>
+    <?php endif; ?>
+    <?php if (!empty($flash['info'])): ?>
+        <div class="alert alert-success"><?= htmlspecialchars($flash['info'][0]) ?></div>
+    <?php endif; ?>
+    <?php if (!empty($flash['error'])): ?>
+        <div class="alert alert-danger"><?= htmlspecialchars($flash['error'][0]) ?></div>
+    <?php endif; ?>
+
+    <?= $content ?>
+
+    <footer class="border-top py-3 mt-5 flex-shrink-0">
+        <div class="container-lg">
+            <div class="text-center">
+                <a href="https://hexlet.io/pages/about" target="_blank">Hexlet</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>
