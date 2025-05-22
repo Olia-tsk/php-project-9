@@ -55,7 +55,12 @@ $urlRepo = $container->get(UrlRepository::class);
 $checkRepo = $container->get(CheckRepository::class);
 
 $app->get('/', function ($request, $response) use ($renderer, $router) {
-    return $renderer->render($response, 'index.phtml', ['router' => $router]);
+    $params = [
+        'router' => $router,
+        'url' => ['name' => ''],
+    ];
+
+    return $renderer->render($response, 'index.phtml', $params);
 })->setName('home');
 
 $app->get('/urls', function ($request, $response) use ($urlRepo, $checkRepo, $router, $renderer) {
@@ -109,7 +114,8 @@ $app->post('/urls', function ($request, $response) use ($router, $urlRepo, $rend
     if (count($errors) != 0) {
         $params = [
             'errors' => $errors,
-            'router' => $router
+            'router' => $router,
+            'url' => $urlData
         ];
 
         return $renderer->render($response->withStatus(422), 'index.phtml', $params);

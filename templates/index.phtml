@@ -8,7 +8,7 @@
                 <form action="<?= $router->urlFor('urls.store') ?>" method="post" class="row" required="">
                     <div class="col-8">
                         <label for="text" class="visually-hidden">Url для проверки</label>
-                        <input type="text" name="url[name]" value="" class="form-control form-control-lg <?= !empty($errors) ? 'is-invalid' : '' ?>" placeholder="https://www.example.com">
+                        <input type="text" name="url[name]" value="<?= htmlspecialchars($url['name']) ?>" class="form-control form-control-lg <?= !empty($errors) ? 'is-invalid' : '' ?>" placeholder="https://www.example.com">
                         <?php if (isset($errors['name'])): ?>
                             <div class="invalid-feedback">
                                 <?= $errors['name'] ?>
