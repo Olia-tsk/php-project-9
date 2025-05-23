@@ -67,4 +67,24 @@ class CheckRepository
 
         return null;
     }
+
+    public function getAllLastChecks(): array
+    {
+        $allLastChecksArr = [];
+
+        $sql = "SELECT DISTINCT ON (url_id) id, url_id, status_code, created_at FROM url_checks ORDER BY url_id, created_at DESC";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute();
+
+        while ($row = $stmt->fetch()) {
+            $check = new UrlCheck();
+            $check->setId($row['id']);
+            $check->setUrlId($row['url_id']);
+            $check->setStatusCode($row['status_code']);
+            $check->setCheckDate($row['created_at']);
+            $allLastChecksArr[] = $check;
+        }
+
+        return $allLastChecksArr;
+    }
 }
