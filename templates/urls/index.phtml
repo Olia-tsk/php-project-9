@@ -15,18 +15,18 @@
                     <?php foreach ($urlsCheckData as $url): ?>
                         <tr>
                             <td>
-                                <?= $url->getUrlId() ?>
+                                <?= $url['id'] ?>
                             </td>
                             <td>
-                                <a href="<?= $router->urlFor('urls.show', ['id' => $url->getUrlId()]) ?>">
-                                    <?= $urlRepo->getUrlName($url->getUrlId()) ?>
+                                <a href="<?= $router->urlFor('urls.show', ['id' => $url['id']]) ?>">
+                                    <?= $url['name'] ?>
                                 </a>
                             </td>
                             <td>
-                                <?= $url->getCheckDate() ?>
+                                <?= $url['created_at'] ?>
                             </td>
                             <td>
-                                <?= $url->getStatusCode() ?>
+                                <?= $url['status_code'] ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>
