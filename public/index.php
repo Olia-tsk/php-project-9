@@ -66,17 +66,24 @@ $app->get('/', function ($request, $response) use ($renderer, $router) {
 $app->get('/urls', function ($request, $response) use ($urlRepo, $checkRepo, $router, $renderer) {
 
     $urls = $urlRepo->getEntities();
+    $lastChecks = $checkRepo->getAllLastChecks();
 
-    $urlsCheckData = array_map(function ($url) use ($checkRepo) {
-        $lastCheck = $checkRepo->getLastCheck($url->getId());
+    $urlsCheckData = array_reduce($urls, function ($result, $url) use ($lastChecks) {
+        $lastCheck = array_filter($lastChecks, function ($check) use ($url) {
+            return $check->getUrlId() == $url->getId();
+        });
 
-        if (is_null($lastCheck)) {
-            $lastCheck = new UrlCheck();
-            $lastCheck->setUrlId($url->getId());
-        }
+        $lastCheck = array_values($lastCheck);
 
-        return $lastCheck;
-    }, $urls);
+        $result[] = [
+            "id" => $url->getId(),
+            'name' => $url->getName(),
+            'status_code' => $lastCheck ? $lastCheck[0]->getStatusCode() : '',
+            'created_at' => $lastCheck ? $lastCheck[0]->getCheckDate() : '',
+        ];
+
+        return $result;
+    });
 
     $params = [
         'urlsCheckData' => $urlsCheckData,
