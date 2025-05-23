@@ -72,7 +72,8 @@ class CheckRepository
     {
         $allLastChecksArr = [];
 
-        $sql = "SELECT DISTINCT ON (url_id) id, url_id, status_code, created_at FROM url_checks ORDER BY url_id, created_at DESC";
+        $sql = "SELECT DISTINCT ON (url_id) id, url_id, status_code, created_at FROM url_checks 
+        ORDER BY url_id, created_at DESC";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute();
 

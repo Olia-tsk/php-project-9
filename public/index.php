@@ -46,10 +46,13 @@ $app = AppFactory::createFromContainer($container);
 $router = $app->getRouteCollector()->getRouteParser();
 
 $errorMiddleware = $app->addErrorMiddleware(true, true, true);
-$errorMiddleware->setErrorHandler(HttpNotFoundException::class, function ($request, $exception, $displayErrorDetails) use ($renderer, $router) {
-    $response = new \Slim\Psr7\Response();
-    return $renderer->render($response->withStatus(404), "404.phtml", ['router' => $router]);
-});
+$errorMiddleware->setErrorHandler(
+    HttpNotFoundException::class,
+    function ($request, $exception, $displayErrorDetails) use ($renderer, $router) {
+        $response = new \Slim\Psr7\Response();
+        return $renderer->render($response->withStatus(404), "404.phtml", ['router' => $router]);
+    }
+);
 
 $urlRepo = $container->get(UrlRepository::class);
 $checkRepo = $container->get(CheckRepository::class);
