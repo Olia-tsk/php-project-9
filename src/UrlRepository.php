@@ -22,9 +22,8 @@ class UrlRepository
 
         if ($stmt) {
             while ($row = $stmt->fetch()) {
-                $url = new Url();
+                $url = new Url($row['name']);
                 $url->setId($row['id']);
-                $url->setName($row['name']);
                 $url->setDate($row['created_at']);
                 $urls[] = $url;
             }
@@ -53,9 +52,8 @@ class UrlRepository
         $stmt->execute([$id]);
 
         if ($row = $stmt->fetch()) {
-            $url = new Url();
+            $url = new Url($row['name']);
             $url->setId($row['id']);
-            $url->setName($row['name']);
             $url->setDate($row['created_at']);
             return $url;
         }
@@ -68,9 +66,8 @@ class UrlRepository
         $stmt->execute([$name]);
 
         if ($row = $stmt->fetch()) {
-            $url = new Url();
+            $url = new Url($row['name']);
             $url->setId($row['id']);
-            $url->setName($row['name']);
             $url->setDate($row['created_at']);
             return $url;
         }

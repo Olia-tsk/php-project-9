@@ -5,8 +5,13 @@ namespace Analyzer;
 class Url
 {
     private ?int $id = null;
-    private ?string $name = null;
+    private string $name;
     private ?string $created_at = null;
+
+    public function __construct($name)
+    {
+        return $this->name = $name;
+    }
 
     public function getId(): ?int
     {
@@ -21,11 +26,6 @@ class Url
     public function getName(): string
     {
         return $this->name;
-    }
-
-    public function setName(string $name): void
-    {
-        $this->name = $name;
     }
 
     public function getDate(): ?string

@@ -132,8 +132,7 @@ $app->post('/urls', function ($request, $response) use ($router, $urlRepo, $rend
         return $response->withRedirect($router->urlFor('urls.show', ['id' => (string) $id]));
     }
 
-    $url = new Url();
-    $url->setName($urlData['name']);
+    $url = new Url($urlData['name']);
     $urlRepo->save($url);
     $id = $url->getId();
     $this->get('flash')->addMessage('success', 'Страница успешно добавлена');
