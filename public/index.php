@@ -73,7 +73,7 @@ $app->get('/urls', function ($request, $response) use ($urlRepo, $checkRepo, $ro
 
     $urlsCheckData = array_reduce($urls, function ($result, $url) use ($lastChecks) {
         $lastCheck = array_filter($lastChecks, function ($check) use ($url) {
-            return $check->getUrlId() == $url->getId();
+            return $check->getUrlId() === $url->getId();
         });
 
         $lastCheck = array_values($lastCheck);
