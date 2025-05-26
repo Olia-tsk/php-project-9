@@ -4,7 +4,7 @@ namespace Analyzer;
 
 use Carbon\Carbon;
 
-class CheckRepository
+class UrlCheckRepository
 {
     private \PDO $connection;
 

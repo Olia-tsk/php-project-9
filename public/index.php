@@ -4,7 +4,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use Analyzer\UrlCheck;
 use Analyzer\Url as Url;
-use Analyzer\CheckRepository;
+use Analyzer\UrlCheckRepository;
 use Analyzer\UrlValidator;
 use Analyzer\UrlRepository;
 use DI\Container;
@@ -55,7 +55,7 @@ $errorMiddleware->setErrorHandler(
 );
 
 $urlRepo = $container->get(UrlRepository::class);
-$checkRepo = $container->get(CheckRepository::class);
+$checkRepo = $container->get(UrlCheckRepository::class);
 
 $app->get('/', function ($request, $response) use ($renderer, $router) {
     $params = [
@@ -164,7 +164,7 @@ $app->post('/urls/{url_id:[0-9]+}/checks', function ($request, $response, $args)
         $title = optional($document->first('title'))->text();
         $descriptionTag = $document->first('meta[name=description]') ?? null;
         $description = $descriptionTag ? $descriptionTag->getAttribute('content') : null;
-        $this->get(CheckRepository::class)->addCheck($urlId, $statusCode, $h1, $title, $description);
+        $this->get(UrlCheckRepository::class)->addCheck($urlId, $statusCode, $h1, $title, $description);
         $this->get('flash')->addMessage('success', 'Страница успешно проверена');
     } catch (RequestException | ConnectException $e) {
         $this->get('flash')->addMessage('error', 'Произошла ошибка при проверке, не удалось подключиться');
