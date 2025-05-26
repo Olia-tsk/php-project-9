@@ -64,7 +64,7 @@ $app->get('/', function ($request, $response) use ($renderer, $router) {
     ];
 
     return $renderer->render($response, 'index.phtml', $params);
-})->setName('home');
+})->setName('/');
 
 $app->get('/urls', function ($request, $response) use ($urlRepo, $checkRepo, $router, $renderer) {
 
