@@ -11,7 +11,7 @@
                         <input type="text" name="url[name]" value="<?= htmlspecialchars($url['name']) ?>" class="form-control form-control-lg <?= !empty($errors) ? 'is-invalid' : '' ?>" placeholder="https://www.example.com">
                         <?php if (isset($errors['name'])): ?>
                             <div class="invalid-feedback">
-                                <?= $errors['name'] ?>
+                                <?= $errors['name'][0] ?>
                             </div>
                         <?php endif ?>
                     </div>
