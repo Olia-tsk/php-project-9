@@ -4,13 +4,13 @@ namespace Analyzer;
 
 class UrlCheck
 {
-    private ?int $id = null;
-    private ?int $url_id = null;
-    private ?int $status_code = null;
+    private ?int $id;
+    private ?int $urlId = null;
+    private ?int $statusCode = null;
     private ?string $h1 = null;
     private ?string $title = null;
     private ?string $description = null;
-    private ?string $created_at = null;
+    private ?string $createdAt;
 
     public function getId()
     {
@@ -24,22 +24,22 @@ class UrlCheck
 
     public function getUrlId()
     {
-        return $this->url_id;
+        return $this->urlId;
     }
 
-    public function setUrlId(?int $url_id): void
+    public function setUrlId(?int $urlId): void
     {
-        $this->url_id = $url_id;
+        $this->urlId = $urlId;
     }
 
     public function getStatusCode()
     {
-        return $this->status_code;
+        return $this->statusCode;
     }
 
-    public function setStatusCode(?int $status_code): void
+    public function setStatusCode(?int $statusCode): void
     {
-        $this->status_code = $status_code;
+        $this->statusCode = $statusCode;
     }
 
     public function getH1()
@@ -74,11 +74,11 @@ class UrlCheck
 
     public function getCheckDate()
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
-    public function setCheckDate(string $created_at): void
+    public function setCheckDate(string $createdAt): void
     {
-        $this->created_at = $created_at;
+        $this->createdAt = $createdAt;
     }
 }

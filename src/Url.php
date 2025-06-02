@@ -4,9 +4,9 @@ namespace Analyzer;
 
 class Url
 {
-    private ?int $id = null;
+    private ?int $id;
     private string $name;
-    private ?string $created_at = null;
+    private ?string $createdAt;
 
     public function __construct($name)
     {
@@ -30,11 +30,11 @@ class Url
 
     public function getDate(): ?string
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
-    public function setDate(string $created_at): void
+    public function setDate(string $createdAt): void
     {
-        $this->created_at = $created_at;
+        $this->createdAt = $createdAt;
     }
 }
