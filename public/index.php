@@ -2,7 +2,6 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Analyzer\UrlCheck;
 use Analyzer\Url as Url;
 use Analyzer\UrlCheckRepository;
 use Analyzer\UrlValidator;
@@ -15,6 +14,7 @@ use GuzzleHttp\Exception\RequestException;
 use Slim\Exception\HttpNotFoundException;
 use Slim\Factory\AppFactory;
 use Slim\Flash\Messages;
+use Slim\Routing\RouteContext;
 use Slim\Views\PhpRenderer;
 
 use function DI\string;
@@ -38,41 +38,42 @@ $container->set('flash', function () {
     return new Messages();
 });
 
-$container->set('renderer', function () {
-    return new PhpRenderer(__DIR__ . '/../templates');
-});
-
-$container->get('renderer')->setLayout('layouts/layout.php');
-
 $app = AppFactory::createFromContainer($container);
 
-$router = $app->getRouteCollector()->getRouteParser();
+$container->set('router', fn() => $app->getRouteCollector()->getRouteParser());
+
+$container->set('renderer', function ($container) {
+    $renderer = new PhpRenderer(__DIR__ . '/../templates', ['router' => $container->get('router')]);
+    $renderer->setLayout('layouts/layout.php');
+    $renderer->addAttribute('getCurrentRoute', function ($request) {
+        $routeContext = RouteContext::fromRequest($request);
+        $route = $routeContext->getRoute();
+        return $route ? $route->getName() : null;
+    });
+    return $renderer;
+});
 
 $errorMiddleware = $app->addErrorMiddleware(true, true, true);
 $errorMiddleware->setErrorHandler(
     HttpNotFoundException::class,
-    function ($request, $exception, $displayErrorDetails) use ($router) {
+    function ($request, $exception, $displayErrorDetails) {
         $response = new \Slim\Psr7\Response();
-        return $this->get('renderer')->render($response->withStatus(404), "404.phtml", ['router' => $router]);
+        return $this->get('renderer')->render($response->withStatus(404), "404.phtml");
     }
 );
 
-$urlRepo = $container->get(UrlRepository::class);
-$checkRepo = $container->get(UrlCheckRepository::class);
-
-$app->get('/', function ($request, $response) use ($router) {
+$app->get('/', function ($request, $response) {
     $params = [
-        'router' => $router,
+        'currentRoute' => $this->get('renderer')->getAttribute('getCurrentRoute')($request),
         'url' => ['name' => ''],
     ];
 
     return $this->get('renderer')->render($response, 'index.phtml', $params);
 })->setName('/');
 
-$app->get('/urls', function ($request, $response) use ($urlRepo, $checkRepo, $router) {
-
-    $urls = $urlRepo->getEntities();
-    $lastChecks = $checkRepo->getAllLastChecks();
+$app->get('/urls', function ($request, $response) {
+    $urls = $this->get(UrlRepository::class)->getEntities();
+    $lastChecks = $this->get(UrlCheckRepository::class)->getAllLastChecks();
 
     $urlsCheckData = array_reduce($urls, function ($result, $url) use ($lastChecks) {
         $lastCheck = array_filter($lastChecks, function ($check) use ($url) {
@@ -84,8 +85,8 @@ $app->get('/urls', function ($request, $response) use ($urlRepo, $checkRepo, $ro
         $result[] = [
             "id" => $url->getId(),
             'name' => $url->getName(),
-            'status_code' => $lastCheck ? $lastCheck[0]->getStatusCode() : '',
-            'created_at' => $lastCheck ? $lastCheck[0]->getCheckDate() : '',
+            'statusCode' => $lastCheck ? $lastCheck[0]->getStatusCode() : '',
+            'createdAt' => $lastCheck ? $lastCheck[0]->getCheckDate() : '',
         ];
 
         return $result;
@@ -93,33 +94,32 @@ $app->get('/urls', function ($request, $response) use ($urlRepo, $checkRepo, $ro
 
     $params = [
         'urlsCheckData' => $urlsCheckData,
-        'router' => $router,
-        'urlRepo' => $urlRepo,
+        'currentRoute' => $this->get('renderer')->getAttribute('getCurrentRoute')($request),
+        'urlRepo' => $this->get(UrlRepository::class),
     ];
     return $this->get('renderer')->render($response, 'urls/index.phtml', $params);
 })->setName('urls.index');
 
-$app->get('/urls/{id:[0-9]+}', function ($request, $response, $args) use ($urlRepo, $checkRepo, $router) {
+$app->get('/urls/{id:[0-9]+}', function ($request, $response, $args) {
     $messages = $this->get('flash')->getMessages();
     $id = $args['id'];
 
-    $url = $urlRepo->find($id);
+    $url = $this->get(UrlRepository::class)->find($id);
 
     if (is_null($url)) {
-        return $this->get('renderer')->render($response->withStatus(404), "404.phtml", ['router' => $router]);
+        return $this->get('renderer')->render($response->withStatus(404), "404.phtml");
     }
 
     $params = [
         'flash' => $messages,
         'url' => $url,
-        'checkData' => $checkRepo->getChecks($args['id']),
-        'router' => $router
+        'checkData' => $this->get(UrlCheckRepository::class)->getChecks($args['id']),
     ];
 
     return $this->get('renderer')->render($response, 'urls/show.phtml', $params);
 })->setName('urls.show');
 
-$app->post('/urls', function ($request, $response) use ($router, $urlRepo) {
+$app->post('/urls', function ($request, $response) {
     $urlData = $request->getParsedBodyParam('url');
 
     $validator = new UrlValidator();
@@ -128,7 +128,6 @@ $app->post('/urls', function ($request, $response) use ($router, $urlRepo) {
     if (count($errors) != 0) {
         $params = [
             'errors' => $errors,
-            'router' => $router,
             'url' => $urlData
         ];
 
@@ -138,25 +137,25 @@ $app->post('/urls', function ($request, $response) use ($router, $urlRepo) {
     $parsedUrl = parse_url($urlData['name']);
     $urlData['name'] = mb_strtolower("{$parsedUrl['scheme']}://{$parsedUrl['host']}");
 
-    $url = $urlRepo->findByName($urlData['name']);
+    $url = $this->get(UrlRepository::class)->findByName($urlData['name']);
 
     if (!is_null($url)) {
         $this->get('flash')->addMessage('success', 'Страница уже существует');
         $id = $url->getId();
-        return $response->withRedirect($router->urlFor('urls.show', ['id' => (string) $id]));
+        return $response->withRedirect($this->get('router')->urlFor('urls.show', ['id' => (string) $id]));
     }
 
     $url = new Url($urlData['name']);
-    $urlRepo->save($url);
+    $this->get(UrlRepository::class)->save($url);
     $id = $url->getId();
     $this->get('flash')->addMessage('success', 'Страница успешно добавлена');
 
-    return $response->withRedirect($router->urlFor('urls.show', ['id' => (string) $id]));
+    return $response->withRedirect($this->get('router')->urlFor('urls.show', ['id' => (string) $id]));
 })->setName('urls.store');
 
-$app->post('/urls/{url_id:[0-9]+}/checks', function ($request, $response, $args) use ($router, $urlRepo) {
+$app->post('/urls/{url_id:[0-9]+}/checks', function ($request, $response, $args) {
     $urlId = $args['url_id'];
-    $url = $urlRepo->find($urlId);
+    $url = $this->get(UrlRepository::class)->find($urlId);
     $client = new Client();
 
     try {
@@ -174,7 +173,7 @@ $app->post('/urls/{url_id:[0-9]+}/checks', function ($request, $response, $args)
         $this->get('flash')->addMessage('error', 'Произошла ошибка при проверке, не удалось подключиться');
     }
 
-    return $response->withRedirect($router->urlFor('urls.show', ['id' => (string) $urlId]));
+    return $response->withRedirect($this->get('router')->urlFor('urls.show', ['id' => (string) $urlId]));
 })->setName('urls.check');
 
 $app->run();
