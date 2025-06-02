@@ -19,13 +19,12 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link active" href="/">Главная</a>
+                        <a class="nav-link <?= $currentRoute == '/' ? 'active' : '' ?>" href="/">Главная</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="/urls">Сайты</a>
+                        <a class="nav-link <?= $currentRoute == 'urls.index' ? 'active' : '' ?>" href="/urls">Сайты</a>
                     </li>
-
                 </ul>
             </div>
         </nav>
