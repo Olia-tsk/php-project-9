@@ -4,13 +4,13 @@ namespace Analyzer;
 
 class Url
 {
-    private ?int $id;
+    private int $id;
     private string $name;
-    private ?string $createdAt;
+    private string $createdAt;
 
-    public function __construct($name)
+    public function __construct(string $name)
     {
-        return $this->name = $name;
+        $this->name = $name;
     }
 
     public function getId(): ?int

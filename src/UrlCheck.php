@@ -4,13 +4,13 @@ namespace Analyzer;
 
 class UrlCheck
 {
-    private ?int $id;
+    private int $id;
     private ?int $urlId = null;
     private ?int $statusCode = null;
     private ?string $h1 = null;
     private ?string $title = null;
     private ?string $description = null;
-    private ?string $createdAt;
+    private string $createdAt;
 
     public function getId()
     {

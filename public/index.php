@@ -48,7 +48,7 @@ $container->set('renderer', function ($container) {
     $renderer->addAttribute('getCurrentRoute', function ($request) {
         $routeContext = RouteContext::fromRequest($request);
         $route = $routeContext->getRoute();
-        return $route ? $route->getName() : null;
+        return $route ? $route->getName() : '';
     });
     return $renderer;
 });
