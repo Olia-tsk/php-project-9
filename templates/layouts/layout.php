@@ -1,4 +1,7 @@
-<!-- @var string $content -->
+<?php
+
+/** @var string $content */
+?>
 
 <!DOCTYPE html>
 <html lang="ru">
