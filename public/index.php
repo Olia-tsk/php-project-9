@@ -45,6 +45,7 @@ $container->set('router', fn() => $app->getRouteCollector()->getRouteParser());
 $container->set('renderer', function ($container) {
     $renderer = new PhpRenderer(__DIR__ . '/../templates', ['router' => $container->get('router')]);
     $renderer->setLayout('layouts/layout.php');
+
     $renderer->addAttribute('getCurrentRoute', function ($request) {
         $routeContext = RouteContext::fromRequest($request);
         $route = $routeContext->getRoute();
