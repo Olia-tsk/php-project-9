@@ -12,24 +12,26 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($urlsCheckData as $url): ?>
-                        <tr>
-                            <td>
-                                <?= $url['id'] ?>
-                            </td>
-                            <td>
-                                <a href="<?= $router->urlFor('urls.show', ['id' => $url['id']]) ?>">
-                                    <?= $url['name'] ?>
-                                </a>
-                            </td>
-                            <td>
-                                <?= $url['createdAt'] ?>
-                            </td>
-                            <td>
-                                <?= $url['statusCode'] ?>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
+                    <?php if (isset($urlsCheckData)): ?>
+                        <?php foreach ($urlsCheckData as $url): ?>
+                            <tr>
+                                <td>
+                                    <?= $url['id'] ?>
+                                </td>
+                                <td>
+                                    <a href="<?= $router->urlFor('urls.show', ['id' => $url['id']]) ?>">
+                                        <?= $url['name'] ?>
+                                    </a>
+                                </td>
+                                <td>
+                                    <?= $url['createdAt'] ?>
+                                </td>
+                                <td>
+                                    <?= $url['statusCode'] ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif ?>
                 </tbody>
             </table>
         </div>
