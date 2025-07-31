@@ -5,7 +5,7 @@ namespace Analyzer;
 class UrlCheck
 {
     private int $id;
-    private ?int $urlId = null;
+    private int $urlId;
     private ?int $statusCode = null;
     private ?string $h1 = null;
     private ?string $title = null;
@@ -27,7 +27,7 @@ class UrlCheck
         return $this->urlId;
     }
 
-    public function setUrlId(?int $urlId): void
+    public function setUrlId(int $urlId): void
     {
         $this->urlId = $urlId;
     }
