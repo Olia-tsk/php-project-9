@@ -8,6 +8,7 @@ use Analyzer\UrlValidator;
 use Analyzer\UrlRepository;
 use DI\Container;
 use DiDom\Document;
+use Dotenv\Dotenv;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
@@ -20,6 +21,9 @@ use Slim\Views\PhpRenderer;
 use function DI\string;
 
 session_start();
+
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv->load();
 
 $container = new Container();
 
