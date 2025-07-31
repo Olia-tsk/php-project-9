@@ -170,7 +170,20 @@ $app->post('/urls/{url_id:[0-9]+}/checks', function ($request, $response, $args)
         $description = $descriptionTag ? $descriptionTag->getAttribute('content') : null;
         $this->get(UrlCheckRepository::class)->addCheck($urlId, $statusCode, $h1, $title, $description);
         $this->get('flash')->addMessage('success', 'Страница успешно проверена');
-    } catch (RequestException | ConnectException $e) {
+    } catch (RequestException $e) {
+        $statusCode = $e->getResponse()?->getStatusCode();
+
+        if ($statusCode !== null) {
+            $h1 = null;
+            $title = null;
+            $description = null;
+            $this->get(UrlCheckRepository::class)->addCheck($urlId, $statusCode, $h1, $title, $description);
+        } else {
+            $this->get('flash')->addMessage('error', 'Ошибка запроса. Код ответа отсутствует.');
+        }
+
+        $this->get('flash')->addMessage('error', "Ошибка ответа. Код: $statusCode");
+    } catch (ConnectException $e) {
         $this->get('flash')->addMessage('error', 'Произошла ошибка при проверке, не удалось подключиться');
     }
 
