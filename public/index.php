@@ -28,12 +28,22 @@ $dotenv->load();
 $container = new Container();
 
 $container->set(PDO::class, function () {
-    $databaseUrl = parse_url($_ENV['DATABASE_URL']);
-    $dbHost = $databaseUrl['host'];
-    $dbName = ltrim($databaseUrl['path'], '/');
-    $dbUser = $databaseUrl['user'];
-    $dbPass = $databaseUrl['pass'];
-    $connection = new PDO("pgsql:host=" . $dbHost . ";dbname=" . $dbName, $dbUser, $dbPass);
+    $dbDriver = $_ENV['DB_CONNECTION'];
+    $dbHost = $_ENV['DB_HOST'];
+    $dbName = $_ENV['DB_DATABASE'];
+    $dbUser = $_ENV['DB_USERNAME'];
+    $dbPass = $_ENV['DB_PASSWORD'];
+    $dbPort = $_ENV['DB_PORT'] ?? null;
+
+    if ($dbDriver === 'mysql') {
+        $dsn = "mysql:host=$dbHost;dbname=$dbName" . ($dbPort ? ";port=$dbPort" : "") . ";charset=utf8mb4";
+    } elseif ($dbDriver === 'pgsql') {
+        $dsn = "pgsql:host=$dbHost;dbname=$dbName" . ($dbPort ? ";port=$dbPort" : "");
+    } else {
+        throw new Exception("Unsupported DB driver: $dbDriver");
+    }
+
+    $connection = new PDO($dsn, $dbUser, $dbPass);
     $connection->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
     return $connection;
 });
