@@ -23,35 +23,37 @@
         <form action="<?= $router->urlFor('urls.check', ['url_id' => $url->getId()]) ?>" class="mb-3" method="post">
             <input type="submit" class="btn btn-primary" value="Запустить проверку">
         </form>
-        <table class="table table-bordered table-hover" data-test="checks">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Код ответа</th>
-                    <th>h1</th>
-                    <th>title</th>
-                    <th>description</th>
-                    <th>Дата создания</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($checkData as $check) : ?>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover text-wrap" data-test="checks">
+                <thead>
                     <tr>
-                        <td><?= $check->getId() ?></td>
-                        <td><?= $check->getStatusCode() ?></td>
-                        <td class="text-break">
-                            <?= $check->getH1() ?>
-                        </td>
-                        <td class="text-break">
-                            <?= $check->getTitle() ?>
-                        </td>
-                        <td class="text-break">
-                            <?= $check->getDescription() ?>
-                        </td>
-                        <td><?= $check->getCheckDate() ?></td>
+                        <th>ID</th>
+                        <th>Код ответа</th>
+                        <th style="min-width: 170px;">h1</th>
+                        <th style="min-width: 200px;">title</th>
+                        <th style="min-width: 260px;">description</th>
+                        <th style="min-width: 100px;">Дата создания</th>
                     </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <?php foreach ($checkData as $check) : ?>
+                        <tr>
+                            <td><?= $check->getId() ?></td>
+                            <td><?= $check->getStatusCode() ?></td>
+                            <td class="text-break">
+                                <?= $check->getH1() ?>
+                            </td>
+                            <td class="text-break">
+                                <?= $check->getTitle() ?>
+                            </td>
+                            <td class="text-break">
+                                <?= $check->getDescription() ?>
+                            </td>
+                            <td><?= $check->getCheckDate() ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
     </div>
 </main>
