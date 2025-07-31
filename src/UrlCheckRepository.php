@@ -72,8 +72,15 @@ class UrlCheckRepository
     {
         $allLastChecksArr = [];
 
-        $sql = "SELECT DISTINCT ON (url_id) id, url_id, status_code, created_at FROM url_checks 
-        ORDER BY url_id, created_at DESC";
+        $sql = "SELECT uc.*
+        FROM url_checks uc
+        INNER JOIN (
+            SELECT url_id, MAX(created_at) AS max_created_at
+            FROM url_checks
+            GROUP BY url_id
+        ) latest
+        ON uc.url_id = latest.url_id AND uc.created_at = latest.max_created_at
+        ORDER BY uc.url_id";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute();
 
